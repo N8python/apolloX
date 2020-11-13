@@ -189,7 +189,7 @@ function setup() {
     sounds.laserOnMetal = loadSound("sounds/laserOnMetal.wav");
     sounds.laserOnFlesh = loadSound("sounds/laserOnFlesh.mp3");
     sounds.laserOnLaser = loadSound("sounds/laserOnLaser.wav");
-    sounds.laserOnLaser2 = loadSound("sounds/laserOnLaser2.wav");
+    sounds.laserOnLaser2 = loadSound("sounds/laserOnLaser.wav");
     sounds.laserBlock = loadSound("sounds/laserBlock.wav");
     sounds.bulletOnFlesh = loadSound("sounds/bulletHit.mp3");
     sounds.bulletShot = loadSound("sounds/bulletShot.wav");
@@ -372,6 +372,16 @@ function draw() {
                 noStroke();
                 rect(player.head.position.x - 297 + 100, player.head.position.y - 296.5, 98 * boss.getHealth(), 7);
             }
+        } else {
+            const maxTick = Math.max(...Object.keys(level));
+            const progression = min(tick / maxTick, 1);
+            strokeWeight(3);
+            stroke(120);
+            fill(60);
+            rect(player.head.position.x - 298 + 100, player.head.position.y - 298, 100, 10);
+            fill(0, 255, 0)
+            noStroke();
+            rect(player.head.position.x - 297 + 100, player.head.position.y - 296.5, 98 * progression, 7);
         }
         fill(255);
         image(coin, player.head.position.x + 170 - 9 * (coins.toString().length - 1), player.head.position.y - 290, 30, 30);
