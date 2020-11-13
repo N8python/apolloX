@@ -544,7 +544,7 @@ const displayLoss = () => {
     menu.html(``);
     const victoryMessage = $("<div>");
     victoryMessage.addClass("w3-animate-opacity");
-    victoryMessage.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 115px; margin-top:200px; font-size:80px;" class="graytext">You Lost!</h1>`);
+    victoryMessage.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 115px; margin-top:200px; font-size:80px;" class="graytext">You Died!</h1>`);
     const backButton = $(`<button id="back" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
     backButton.click(() => {
         levelSelectMenu();

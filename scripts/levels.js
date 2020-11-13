@@ -1,22 +1,22 @@
 const levels = [{
-    0: [melee(0.2), melee(0.2), melee(0.2), melee(0.2)],
-    [60 * 12]: [ranged(0.2), ranged(0.2), melee(0.2), melee(0.2), melee(0.2)],
-    [60 * 24]: [ranged(0.2), ranged(0.2), meleeHeavy(0.2)],
-    [60 * 36]: [melee(0.4), melee(0.4), melee(0.4), ranged(0.6)],
-    [60 * 48]: [meleeHeavy(0.6)]
+    0: [melee(0.1), melee(0.1), melee(0.1), melee(0.1)],
+    [60 * 12]: [ranged(0.1), ranged(0.1), melee(0.1), melee(0.1), melee(0.1)],
+    [60 * 24]: [ranged(0.15), ranged(0.15), meleeHeavy(0.1)],
+    [60 * 36]: [melee(0.25), melee(0.25), melee(0.25), ranged(0.3)],
+    [60 * 48]: [meleeHeavy(0.3)]
 }, {
-    0: [melee(0.75), melee(0.75)],
+    0: [melee(0.5), melee(0.5)],
     [60 * 6]: [ranged(0.2), ranged(0.2), ranged(0.2)],
-    [60 * 24]: [ranged(0.6), ranged(0.6), meleeHeavy(0.2), melee(0.75)],
-    [60 * 36]: [meleeRanged(0.3), meleeRanged(0.3), ranged(0.2)],
-    [60 * 48]: [ranged(0.45), meleeRanged(0.45), ranged(0.6)],
+    [60 * 24]: [ranged(0.4), ranged(0.4), meleeHeavy(0.2), melee(0.3)],
+    [60 * 36]: [meleeRanged(0.2), meleeRanged(0.2), ranged(0.1)],
+    [60 * 48]: [ranged(0.3), meleeRanged(0.3), ranged(0.4)],
     [60 * 60]: [meleeHeavy(0.4)]
 }, {
     0: [meleeRanged(0.2), meleeRanged(0.2), meleeRanged(0.2), meleeRanged(0.2)],
     [60 * 6]: [ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2)],
     [60 * 12]: [melee(0.2), melee(0.2), melee(0.2), melee(0.2), melee(0.2), meleeRanged(0.4)],
     [60 * 30]: [melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1)],
-    [60 * 42]: [meleeRanged(1)]
+    [60 * 42]: [meleeRanged(0.8)]
 }, {
     0: [ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2)],
     [60 * 6]: [melee(0.2), melee(0.2), melee(0.2), melee(0.2), melee(0.2)],
