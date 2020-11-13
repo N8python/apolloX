@@ -5,15 +5,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apollo X</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <script src="https://cdn.jsdelivr.net/npm/p5@1.1.9/lib/p5.js"></script>
+    <script src="scripts/p5.sound.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+    <div id="menu" style="text-align:left;position:absolute;max-height:600px;overflow:scroll;">
+        <h1 class="w3-text-white" style="margin-left:130px;font-size:80px;" class="graytext">Apollo X</h1>
+        <br>
+        <button id="selectLevel" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Level Select</button>
+        <br>
+        <br>
+        <button id="shop" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Shop</button>
+        <br>
+        <br>
+        <button id="instructions" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Instructions</button>
+    </div>
+    <div id="instructionModal" class="w3-modal w3-animate-zoom">
+        <div class="w3-modal-content">
+            <div class="w3-container w3-gray w3-text-white">
+                <span onclick='$("#instructionModal").css("display", "none");' class="w3-button w3-display-topright">&times;</span>
+                <h1>Instructions</h1>
+                <p>Press and hold <img src="assets/space-key.png" style="width:100px;height:25px;"> to boost towards the <img src="assets/mouse.png" style="width:16px;height:25px"></p>
+                <h3>When holding ranged weapons:</h3>
+                <p><img src="assets/mouse-click.gif" style="width:25px;height:25px;"> to shoot, and hold to keep shooting. You can do this while holding <img src="assets/space-key.png" style="width:100px;height:25px;">.</p>
+                <h3>When holding the harpoon:</h3>
+                <p><img src="assets/mouse-click.gif" style="width:25px;height:25px;"> and hold to rotate your harpoon towards the <img src="assets/mouse.png" style="width:16px;height:25px">. You can do this while holding <img src="assets/space-key.png" style="width:100px;height:25px;">.</p>
+                <h3>Staying Alive:</h3>
+                <p><img src="assets/healthbar.png"> <span style="position:relative;top:2px;">- This is your health bar. If it reaches zero, you die.</span></p>
+                <h3>Getting Stronger:</h3>
+                <p>When you kill enemies, you get coins. You can use these coins to buy upgrades in the shop.</p>
+            </div>
+        </div>
+    </div>
+    <button id="settings" class="w3-button w3-gray w3-xlarge w3-text-white w3-round" style="position:absolute;margin-left:537px;display:none;"><i class="w3-xxlarge fa fa-cog"></i></button>
     <script src="scripts/matter.js"></script>
+    <script src="scripts/proxy.js"></script>
     <script src="scripts/stars.js"></script>
+    <script src="scripts/coin.js"></script>
     <script src="scripts/rendering.js"></script>
+    <script src="scripts/asteroid.js"></script>
+    <script src="scripts/powerup.js"></script>
     <script src="scripts/person.js"></script>
+    <script src="scripts/levels.js"></script>
     <script src="scripts/main.js"></script>
 </body>
 

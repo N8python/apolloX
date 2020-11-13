@@ -1,0 +1,20 @@
+h1,
+h3,
+h4,
+p,
+label {
+    font-family: 'Righteous', cursive;
+}
+
+.graytext {
+    color: lightgray;
+}
+
+#menu {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#menu::-webkit-scrollbar {
+    display: none;
+}
