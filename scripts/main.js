@@ -178,11 +178,6 @@ function preload() {
     powerups.sword.xOffset = 0;
     powerups.sword.yOffset = -2;
     powerups.sword.scale = 0.9;
-}
-let moonX;
-let moonY;
-
-function setup() {
     sounds.laserSwing1 = loadSound("sounds/laserSwing1.wav");
     sounds.laserSwing2 = loadSound("sounds/laserSwing2.wav");
     sounds.laserSwing3 = loadSound("sounds/laserSwing3.wav");
@@ -198,6 +193,11 @@ function setup() {
     sounds.asteroidHit = loadSound("sounds/asteroidHit.mp3");
     sounds.pop = loadSound("sounds/pop.flac");
     sounds.track1 = loadSound("sounds/track1.mp3");
+}
+let moonX;
+let moonY;
+
+function setup() {
     createCanvas(600, 600);
     starSeed = floor(random(0, 1000));
     engine = Engine.create({
