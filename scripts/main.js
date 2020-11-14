@@ -182,7 +182,7 @@ function preload() {
     sounds.laserSwing2 = loadSound("sounds/laserSwing2.wav");
     sounds.laserSwing3 = loadSound("sounds/laserSwing3.wav");
     sounds.laserOnMetal = loadSound("sounds/laserOnMetal.wav");
-    sounds.laserOnFlesh = loadSound("sounds/laserOnFlesh.mp3");
+    sounds.laserOnFlesh = loadSound("sounds/laserOnFlesh.wav");
     sounds.laserOnLaser = loadSound("sounds/laserOnLaser.wav");
     sounds.laserOnLaser2 = loadSound("sounds/laserOnLaser.wav");
     sounds.laserBlock = loadSound("sounds/laserBlock.wav");
@@ -190,7 +190,7 @@ function preload() {
     sounds.bulletShot = loadSound("sounds/bulletShot.wav");
     sounds.railgunShot = loadSound("sounds/railgunShot.wav");
     sounds.hellfire = loadSound("sounds/hellfire.wav");
-    sounds.asteroidHit = loadSound("sounds/asteroidHit.mp3");
+    sounds.asteroidHit = loadSound("sounds/asteroidHit.wav");
     sounds.pop = loadSound("sounds/pop.flac");
     sounds.track1 = loadSound("sounds/track1.mp3");
 }
@@ -307,10 +307,10 @@ function draw() {
                 enemies.push(newEnemy);
             });
         }
-        if (Math.random() < localProxy.powerUpInfo.healthSpawnRate && !player.dead) {
+        if (Math.random() < localProxy.powerUpInfo.healthSpawnRate && !player.dead && !paused) {
             powerupList.push(healthPowerup(player.head.position.x + random(100, 200) * (random() < 0.5 ? 1 : -1), player.head.position.y + random(100, 200) * (random() < 0.5 ? 1 : -1)));
         }
-        if (Math.random() < localProxy.powerUpInfo.strengthSpawnRate && !player.dead) {
+        if (Math.random() < localProxy.powerUpInfo.strengthSpawnRate && !player.dead && !paused) {
             powerupList.push(damagePowerup(player.head.position.x + random(100, 200) * (random() < 0.5 ? 1 : -1), player.head.position.y + random(100, 200) * (random() < 0.5 ? 1 : -1)));
         }
         translate(300 - player.head.position.x, 300 - player.head.position.y);

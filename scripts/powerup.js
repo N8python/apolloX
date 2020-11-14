@@ -11,17 +11,19 @@ function PowerUp({
     return {
         draw() {
             const enterScale = min((tick + 1) / 60, 1);
-            x += xVel * cos(tick / 100);
-            y += yVel * sin(tick / 100);
-            xVel += (Math.random() - 0.5) * 0.025;
-            yVel += (Math.random() - 0.5) * 0.025;
-            if (dist(x, y, player.x, player.y) > 150) {
-                const toPlayer = vecTo(x, y, player.x, player.y, 0.025);
-                xVel += toPlayer.x;
-                yVel += toPlayer.y;
+            if (!paused) {
+                x += xVel * cos(tick / 100);
+                y += yVel * sin(tick / 100);
+                xVel += (Math.random() - 0.5) * 0.025;
+                yVel += (Math.random() - 0.5) * 0.025;
+                if (dist(x, y, player.x, player.y) > 150) {
+                    const toPlayer = vecTo(x, y, player.x, player.y, 0.025);
+                    xVel += toPlayer.x;
+                    yVel += toPlayer.y;
+                }
+                xVel *= 0.99;
+                yVel *= 0.99;
             }
-            xVel *= 0.99;
-            yVel *= 0.99;
             stroke(borderColor);
             strokeWeight(3);
             fill(fillColor);
@@ -31,7 +33,9 @@ function PowerUp({
             imageMode(CORNER);
             stroke(0);
             strokeWeight(1);
-            tick++;
+            if (!paused) {
+                tick++;
+            }
             if ((dist(x, y, player.x, player.y) < 50)) {
                 sounds.pop.setVolume(2 * localProxy.sfxVolume);
                 sounds.pop.play();
