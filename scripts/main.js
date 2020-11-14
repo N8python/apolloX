@@ -100,25 +100,25 @@ const weapons = {
         weapon: () => lance,
         display: "Laser Lance",
         unlocked: false,
-        cost: 150
+        cost: 200
     },
     "railgun": {
         weapon: () => railgun,
         display: "Railgun",
         unlocked: false,
-        cost: 250
+        cost: 400
     },
     "plasrifle": {
         weapon: () => plasrifle,
         display: "Plasma Rifle",
         unlocked: false,
-        cost: 300
+        cost: 500
     },
     "harpoon": {
         weapon: () => harpoon,
         display: "Harpoon",
         unlocked: false,
-        cost: 500
+        cost: 750
     }
 }
 localProxy.unlockedWeapons.forEach(weapon => {
