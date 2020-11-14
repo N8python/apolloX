@@ -562,6 +562,16 @@ const displayLoss = () => {
         gameState = "start";
         clearGameState();
     });
+    const restartButton = $(`<button id="restart" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Restart</button>`);
+    restartButton.click(() => {
+        clearGameState();
+        gameState = "play";
+        menu.html("");
+        level = levels[levelNum];
+    })
+    victoryMessage.append(restartButton);
+    victoryMessage.append($("<br>"));
+    victoryMessage.append($("<br>"));
     victoryMessage.append(backButton);
     menu.append(victoryMessage);
 }
