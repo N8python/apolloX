@@ -663,7 +663,7 @@ function Person({
                         coinList.push(Coin({
                             x: this.x + random(-30, 30),
                             y: this.y + random(-30, 30),
-                            value: coinValue * max(round(strength / 0.2), 1) * 3
+                            value: coinValue * max(round(strength / 0.2), 1) * 2
                         }));
                     }
                 }
