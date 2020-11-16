@@ -8,7 +8,6 @@ const levels = [{
     [60 * 6]: [ranged(0.2), ranged(0.2), ranged(0.2)],
     [60 * 24]: [ranged(0.4), ranged(0.4), meleeHeavy(0.2), melee(0.3)],
     [60 * 36]: [meleeRanged(0.2), meleeRanged(0.2), ranged(0.1)],
-    [60 * 48]: [ranged(0.3), meleeRanged(0.3), ranged(0.4)]
 }, {
     0: [meleeRanged(0.2), meleeRanged(0.2), meleeRanged(0.2), meleeRanged(0.2)],
     [60 * 6]: [ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2)],
