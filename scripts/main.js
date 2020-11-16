@@ -83,6 +83,9 @@ if (localProxy.sfxVolume === undefined) {
 if (!localProxy.powerUpInfo) {
     localProxy.powerUpInfo = powerUpInfo;
 }
+if (!localProxy.waveRecord) {
+    localProxy.waveRecord = 0;
+}
 const weapons = {
     "lazord": {
         weapon: () => lazord,
@@ -261,9 +264,11 @@ function clearGameState() {
     powerupList = [];
     player.add();
     tick = 0;
+    wave = 0;
     winState = undefined;
 }
 let tick = 0;
+let wave = 0;
 const settings = $("#settings");
 let winState;
 
@@ -306,6 +311,53 @@ function draw() {
                 newEnemy.add()
                 enemies.push(newEnemy);
             });
+        }
+        if (level.endless) {
+            if (tick % 360 === 0 && !paused && !player.dead) {
+                let totalEnemies = round(random(floor((wave + 1) / 5), 5 + floor((wave + 1) / 5)));
+                totalEnemies = min(10, totalEnemies);
+                if (enemies.length > 14) {
+                    totalEnemies = 0;
+                }
+                let minStrength = 0.1;
+                let maxStrength = 0.5;
+                for (let i = 0; i < wave; i++) {
+                    if (i < 10) {
+                        minStrength += 0.025;
+                        maxStrength += 0.05;
+                    } else if (i < 20) {
+                        minStrength += 0.025;
+                        maxStrength += 0.04;
+                    } else if (i < 30) {
+                        minStrength += 0.025;
+                        maxStrength += 0.03;
+                    } else if (i < 40) {
+                        minStrength += 0.015;
+                        maxStrength += 0.02;
+                    } else {
+                        maxStrength += 0.01;
+                    }
+                }
+                let totalPool = 0;
+                endless.enemiesList.forEach(enemy => {
+                    totalPool += endless.enemyPotency[enemy](wave);
+                });
+                endless.enemiesList.forEach(enemy => {
+                    let amtToSpawn = round((endless.enemyPotency[enemy](wave) / totalPool) * totalEnemies);
+                    if (enemy === "rangedRapid" && enemies.filter(enemy => enemy.type === "rangedRapid").length >= 2) {
+                        amtToSpawn = 0;
+                    }
+                    for (let i = 0; i < amtToSpawn; i++) {
+                        const e = endless.enemyCode[enemy](random(minStrength, maxStrength))();
+                        e.add();
+                        enemies.push(e);
+                    }
+                });
+                wave++;
+                if (wave > localProxy.waveRecord) {
+                    localProxy.waveRecord = wave;
+                }
+            }
         }
         if (Math.random() < localProxy.powerUpInfo.healthSpawnRate && !player.dead && !paused) {
             powerupList.push(healthPowerup(player.head.position.x + random(100, 200) * (random() < 0.5 ? 1 : -1), player.head.position.y + random(100, 200) * (random() < 0.5 ? 1 : -1)));
@@ -372,6 +424,11 @@ function draw() {
                 noStroke();
                 rect(player.head.position.x - 297 + 100, player.head.position.y - 296.5, 98 * boss.getHealth(), 7);
             }
+        } else if (levelNum === 10) {
+            textAlign(LEFT);
+            textSize(15);
+            text("Wave: " + wave, player.head.position.x - 294 + 100, player.head.position.y - 286);
+            text("Wave Record: " + localProxy.waveRecord, player.head.position.x - 294 + 100, player.head.position.y - 266);
         } else {
             const maxTick = Math.max(...Object.keys(level));
             const progression = min(tick / maxTick, 1);
@@ -385,6 +442,8 @@ function draw() {
         }
         fill(255);
         image(coin, player.head.position.x + 170 - 9 * (coins.toString().length - 1), player.head.position.y - 290, 30, 30);
+        textAlign(CENTER);
+        textSize(30);
         text(coins, player.head.position.x + 200 - 3 * (coins.toString().length - 1), player.head.position.y - 290, 35);
         if (player.x < -2100 || player.x > 2100 || player.y < -2100 || player.y > 2100) {
             player.die();
@@ -465,6 +524,7 @@ const levelSelectMenu = () => {
     levelButtons.css("text-align", "left");
     const startButton = $(`<button id="start" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Start</button>`);
     startButton.css("display", "none");
+    const endlessButton = $(`<button id="endless" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Endless</button>`);
     const backButton = $(`<button id="back" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
     let currLevel;
     Array(10).fill(undefined).forEach((_, i) => {
@@ -490,12 +550,25 @@ const levelSelectMenu = () => {
         levelNum = currLevel;
         level = levels[levelNum];
     });
+    endlessButton.click(() => {
+        currLevel = 10;
+        wave = 0;
+        gameState = "play";
+        menu.html("");
+        levelNum = currLevel;
+        level = levels[levelNum];
+    })
     backButton.click(mainMenu);
     menu.append(levelButtons);
     menu.append("<br>");
     menu.append(startButton);
     menu.append("<br>");
     menu.append("<br>");
+    if (maxLevelUnlocked === 10) {
+        menu.append(endlessButton);
+        menu.append("<br>");
+        menu.append("<br>");
+    }
     menu.append(backButton);
 };
 const settingsMenu = () => {

@@ -1807,3 +1807,23 @@ const boss = (strength) => () => Person({
     coinValue: 10,
     boss: true
 });
+
+const endless = {
+    enemiesList: ["melee", "ranged", "meleeRanged", "rangedMelee", "rangedRapid", "meleeHarpoon"],
+    enemyCode: {
+        melee: melee,
+        ranged: ranged,
+        meleeRanged: meleeRanged,
+        rangedMelee: rangedMelee,
+        rangedRapid: rangedRapid,
+        meleeHarpoon: meleeHarpoon
+    },
+    enemyPotency: {
+        melee: (wave) => 1.15 ** (-wave),
+        ranged: (wave) => (1 / (1 + Math.exp(-30 * (wave - 8) ** -2))) * 2 - 1,
+        meleeRanged: (wave) => Math.max((1 / (1 + Math.exp(-100 * (wave - 10) ** -2))) * 2 - 1, 0.25),
+        rangedMelee: (wave) => 1 / (1 + Math.exp(-0.1 * (wave - 30))),
+        rangedRapid: (wave) => 0.5 / (1 + Math.exp(-0.2 * (wave - 30))),
+        meleeHarpoon: (wave) => 1 / (1 + Math.exp(-0.25 * (wave - 35)))
+    }
+}

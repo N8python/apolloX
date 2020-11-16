@@ -53,4 +53,6 @@ const levels = [{
     [60 * 36]: [meleeHarpoon(1)]
 }, {
     0: [boss(0.7)]
+}, {
+    endless: true
 }]
