@@ -425,6 +425,7 @@ function draw() {
                 rect(player.head.position.x - 297 + 100, player.head.position.y - 296.5, 98 * boss.getHealth(), 7);
             }
         } else if (levelNum === 10) {
+            fill(255);
             textAlign(LEFT);
             textSize(15);
             text("Wave: " + wave, player.head.position.x - 294 + 100, player.head.position.y - 286);
