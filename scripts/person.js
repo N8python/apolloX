@@ -701,6 +701,13 @@ function Person({
                     //sounds.out.setVolume(Math.random() * 0.3);
                     //sounds.out.play();
                 }
+                this.bodyParts.forEach(part => {
+                    if (part.damageCooldown === undefined) {
+                        part.damageCooldown = 0;
+                    } else {
+                        part.damageCooldown--;
+                    }
+                })
                 if (!type) {
                     enemies.forEach(enemy => {
                         if (Detector.collisions([
@@ -864,6 +871,69 @@ function Person({
                     }
                     bullet.source = "player";
                     Body.setVelocity(bullet, { x: fireX * 25, y: fireY * 25 });
+                    if (weapon === pistol) {
+                        emitters.push(Emitter({
+                            x: weaponBox.position.x + fireX * 10,
+                            y: weaponBox.position.y + fireY * 10,
+                            minSize: 3,
+                            maxSize: 9,
+                            distributionSize: 0,
+                            colors: [
+                                [255, 255, 255]
+                            ],
+                            rate: Infinity,
+                            startingParticles: 7,
+                            magnitude: 1,
+                            duration: 120,
+                            particleDuration: 120,
+                            minAngle: degrees(bullet.angle) - 45,
+                            maxAngle: degrees(bullet.angle) + 45,
+                            display: "circle",
+                            overlay: true
+                        }));
+                    } else if (weapon === plasrifle) {
+                        emitters.push(Emitter({
+                            x: weaponBox.position.x + fireX * 10 * offsetMultiplier,
+                            y: weaponBox.position.y + fireY * 10 * offsetMultiplier,
+                            minSize: 3,
+                            maxSize: 6,
+                            distributionSize: 0,
+                            colors: [
+                                [125, 0, 255]
+                            ],
+                            rate: Infinity,
+                            startingParticles: 20,
+                            magnitude: 2,
+                            duration: 120,
+                            particleDuration: 120,
+                            minAngle: degrees(bullet.angle) - 22.5,
+                            maxAngle: degrees(bullet.angle) + 22.5,
+                            display: "circle",
+                            overlay: true
+                        }));
+                    } else if (weapon === railgun) {
+                        if (tick % 1 === 0) {
+                            emitters.push(Emitter({
+                                x: weaponBox.position.x + fireX * 10 * offsetMultiplier,
+                                y: weaponBox.position.y + fireY * 10 * offsetMultiplier,
+                                minSize: 1,
+                                maxSize: 9,
+                                distributionSize: 0,
+                                colors: [
+                                    [255, 255, 0]
+                                ],
+                                rate: Infinity,
+                                startingParticles: 1,
+                                magnitude: 3,
+                                duration: 60,
+                                particleDuration: 60,
+                                minAngle: degrees(bullet.angle) - 60,
+                                maxAngle: degrees(bullet.angle) + 60,
+                                display: "circle",
+                                overlay: true
+                            }));
+                        }
+                    }
                     bullets.push(bullet);
                     if (weapon !== railgun) {
                         sounds.bulletShot.setVolume(random(0.2, 0.4) * localProxy.sfxVolume);
@@ -1551,6 +1621,26 @@ function Person({
                     }
                 }
                 if (body.health) {
+                    if (body.damageCooldown < 0) {
+                        emitters.push(Emitter({
+                            x: body.position.x,
+                            y: body.position.y,
+                            minSize: 1,
+                            maxSize: 1,
+                            distributionSize: 0,
+                            colors: [
+                                color
+                            ],
+                            rate: Infinity,
+                            startingParticles: 15,
+                            magnitude: 1,
+                            duration: 30,
+                            particleDuration: 30,
+                            display: "line",
+                            lineSize: 8
+                        }));
+                        body.damageCooldown = 60;
+                    }
                     if (!bullets.includes(opponent) && !opponent.asteroid) {
                         const damageMultiplier = this.opponent.isPlayer ? localProxy.damageMultiplier : 1;
                         const multiplier = (this.opponent.weapon.isHarpoon ? 1 : 5);

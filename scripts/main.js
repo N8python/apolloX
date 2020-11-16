@@ -8,6 +8,7 @@ let player;
 let enemies = [];
 let bullets = [];
 let powerupList = [];
+let emitters = [];
 let lazord;
 let lazdagger;
 let axe;
@@ -240,7 +241,28 @@ function setup() {
     ]
     enemies.forEach(enemy => {
         enemy.add();
-    })
+    });
+    /*emitters.push(Emitter({
+        x: 0,
+        y: 0,
+        minSize: 1,
+        maxSize: 3,
+        distributionSize: 0,
+        colors: [
+            [255, 0, 0],
+            [0, 255, 0],
+            [0, 0, 255]
+        ],
+        rate: 1,
+        startingParticles: 10,
+        magnitude: 5,
+        duration: 360,
+        particleDuration: 60,
+        minAngle: 180,
+        maxAngle: 270,
+        display: "line",
+        lineSize: 2
+    }))*/
     player.add();
     Engine.run(engine);
 }
@@ -281,16 +303,16 @@ function reset() {
 }
 
 function draw() {
-    coins = min(coins, 9999);
+    coins = min(coins, 99999);
     coins = round(coins);
     localStorage.coins = coins;
     localStorage.maxLevelUnlocked = maxLevelUnlocked;
     background(0);
-    image(coin, 450 + 80 - 9 * (coins.toString().length - 1), 10, 30, 30);
+    image(coin, 450 + 80 - 11 * (coins.toString().length - 1), 10, 30, 30);
     fill(255);
     textAlign(CENTER);
     textSize(30);
-    text(coins, 495 + 80 - 3 * (coins.toString().length - 1), 35);
+    text(coins, 495 + 80 - 4 * (coins.toString().length - 1), 35);
     sounds.track1.setVolume(localProxy.musicVolume);
     if (gameState === "play") {
         if (!sounds.track1.isPlaying()) {
@@ -442,10 +464,10 @@ function draw() {
             rect(player.head.position.x - 297 + 100, player.head.position.y - 296.5, 98 * progression, 7);
         }
         fill(255);
-        image(coin, player.head.position.x + 170 - 9 * (coins.toString().length - 1), player.head.position.y - 290, 30, 30);
+        image(coin, player.head.position.x + 170 - 11 * (coins.toString().length - 1), player.head.position.y - 290, 30, 30);
         textAlign(CENTER);
         textSize(30);
-        text(coins, player.head.position.x + 200 - 3 * (coins.toString().length - 1), player.head.position.y - 290, 35);
+        text(coins, player.head.position.x + 200 - 4 * (coins.toString().length - 1), player.head.position.y - 290, 35);
         if (player.x < -2100 || player.x > 2100 || player.y < -2100 || player.y > 2100) {
             player.die();
         }
@@ -461,6 +483,9 @@ function draw() {
                 enemy.die();
             }
         });
+        emitters.forEach(emitter => {
+            emitter.draw();
+        })
         bullets.forEach((bullet, i) => {
             if (!bullet.tick) {
                 bullet.tick = 1;
