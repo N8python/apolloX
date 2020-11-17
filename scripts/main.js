@@ -87,6 +87,21 @@ if (!localProxy.powerUpInfo) {
 if (!localProxy.waveRecord) {
     localProxy.waveRecord = 0;
 }
+if (localProxy.achievements === undefined) {
+    localProxy.achievements = [];
+}
+if (localProxy.unlockedHats === undefined) {
+    localProxy.unlockedHats = ["spaceHelmet"];
+    localProxy.achievements.forEach((achievementName) => {
+        const hatsUnlocked = achievementList.find(achievement => achievement.title === achievementName).hatsUnlocked;
+        if (hatsUnlocked) {
+            localProxy.unlockedHats = localProxy.unlockedHats.concat(hatsUnlocked);
+        }
+    })
+}
+if (localProxy.hat === undefined) {
+    localProxy.hat = "spaceHelmet";
+}
 const weapons = {
     "lazord": {
         weapon: () => lazord,
@@ -305,6 +320,18 @@ function reset() {
 function draw() {
     coins = min(coins, 99999);
     coins = round(coins);
+    if (coins >= 999) {
+        achievements.add(jeffBezos);
+    }
+    if (coins >= 9999) {
+        achievements.add(johnDRockefeller);
+    }
+    if (coins >= 99999) {
+        achievements.add(mansaMusa);
+    }
+    if (localProxy.achievements.length === achievementList.length - 1) {
+        achievements.add(sweatlord);
+    }
     localStorage.coins = coins;
     localStorage.maxLevelUnlocked = maxLevelUnlocked;
     background(0);
@@ -375,6 +402,21 @@ function draw() {
                         enemies.push(e);
                     }
                 });
+                if (wave === 1) {
+                    achievements.add(georgeWashington);
+                }
+                if (wave === 5) {
+                    achievements.add(theSenses);
+                }
+                if (wave === 10) {
+                    achievements.add(alexanderHamilton);
+                }
+                if (wave === 50) {
+                    achievements.add(tinPentecost);
+                }
+                if (wave === 100) {
+                    achievements.add(benFranklin);
+                }
                 wave++;
                 if (wave > localProxy.waveRecord) {
                     localProxy.waveRecord = wave;
@@ -485,7 +527,7 @@ function draw() {
         });
         emitters.forEach(emitter => {
             emitter.draw();
-        })
+        });
         bullets.forEach((bullet, i) => {
             if (!bullet.tick) {
                 bullet.tick = 1;
@@ -514,10 +556,12 @@ function draw() {
         coinList.forEach(coinDisp => {
             coinDisp.draw();
         })
+        achievements.render();
         tick++;
     } else {
         sounds.track1.pause()
         settings.css("display", "none");
+        achievements.render();
     }
     if (paused) {
         engine.world.bodies.forEach(body => Sleeping.set(body, true));
@@ -538,6 +582,9 @@ const mainMenu = () => {
         <br>
         <br>
         <button id="shop" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Shop</button>
+        <br>
+        <br>
+        <button id="achievements" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Achievements</button>
         <br>
         <br>
         <button id="instructions" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Instructions</button>
@@ -635,6 +682,12 @@ const settingsMenu = () => {
     menu.append(resumeButton);
 }
 const displayVictory = () => {
+    if (player.getHealth() < 0.2) {
+        achievements.add(clutchGod);
+    }
+    if (levelNum === 9) {
+        achievements.add(moonLanding);
+    }
     menu.html(``);
     const victoryMessage = $("<div>");
     victoryMessage.addClass("w3-animate-opacity");
@@ -715,6 +768,7 @@ const powerupShop = () => {
                 temp[name + "SpawnUpgrade"] = round(localProxy.powerUpInfo[name + "SpawnUpgrade"] * 1.5);
                 localProxy.powerUpInfo = temp;
                 $(`#${name}DisplayS`).html(`Upgrade ${display} spawn frequency for ${localProxy.powerUpInfo[name + "SpawnUpgrade"]} for coins.`);
+                achievements.add(tickSpeed);
             }
         })
         upgradePotencyButton.click(() => {
@@ -726,6 +780,12 @@ const powerupShop = () => {
                 temp[name + "PotencyUpgrade"] = round(localProxy.powerUpInfo[name + "PotencyUpgrade"] * 1.5);
                 localProxy.powerUpInfo = temp;
                 $(`#${name}DisplayP`).html(`Upgrade ${display} potency for ${localProxy.powerUpInfo[name + "PotencyUpgrade"]} for coins.`);
+                if (name === "health") {
+                    achievements.add(doctor);
+                }
+                if (name === "strength") {
+                    achievements.add(hercules);
+                }
             }
         })
         shopButtons.append(upgradeSpawnButton);
@@ -748,6 +808,13 @@ const weaponShop = () => {
         }
         weaponButton.click(() => {
             if (coins >= weapon.cost && !weapon.unlocked) {
+                achievements.add(({
+                    "pistol": spaceEagle,
+                    "lance": roundTable,
+                    "railgun": rubiedOn,
+                    "plasrifle": fourthState,
+                    "harpoon": mobyStar
+                })[weaponName]);
                 coins -= weapon.cost;
                 weapon.unlocked = true;
                 weaponButton.html(`${weapon.display}`);
@@ -783,42 +850,68 @@ const weaponShop = () => {
     menu.append(shopButtons);
 }
 const characterShop = () => {
-        menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 90px; font-size:80px;" class="graytext">Character:</h1>`);
-        const shopButtons = $("<div>");
-        const backButton = $(`<button id="back" style="margin-left:190px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
-        const upgradeHealth = $(`<button id="back" style="margin-left:60px;width:475px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Upgrade Your Health for ${localProxy.healthUpgradeCost} Coins</button>`);
-        const upgradeDamage = $(`<button id="back" style="margin-left:60px;width:475px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Upgrade Your Damage for ${localProxy.damageUpgradeCost} Coins</button>`);
-        upgradeHealth.click(() => {
-            if (coins >= localProxy.healthUpgradeCost) {
-                coins -= localProxy.healthUpgradeCost;
-                localProxy.healthMultiplier = localProxy.healthMultiplier + 1 / 3;
-                localProxy.healthUpgradeCost *= 1.5;
-                localProxy.healthUpgradeCost = Math.round(localProxy.healthUpgradeCost);
-                upgradeHealth.html(`Upgrade Your Health for ${localProxy.healthUpgradeCost} Coins`);
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 90px; font-size:80px;" class="graytext">Character:</h1>`);
+    const shopButtons = $("<div>");
+    const backButton = $(`<button id="back" style="margin-left:190px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    const upgradeHealth = $(`<button id="back" style="margin-left:60px;width:475px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Upgrade Your Health for ${localProxy.healthUpgradeCost} Coins</button>`);
+    const upgradeDamage = $(`<button id="back" style="margin-left:60px;width:475px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Upgrade Your Damage for ${localProxy.damageUpgradeCost} Coins</button>`);
+    upgradeHealth.click(() => {
+        if (coins >= localProxy.healthUpgradeCost) {
+            coins -= localProxy.healthUpgradeCost;
+            localProxy.healthMultiplier = localProxy.healthMultiplier + 1 / 3;
+            localProxy.healthUpgradeCost *= 1.5;
+            localProxy.healthUpgradeCost = Math.round(localProxy.healthUpgradeCost);
+            upgradeHealth.html(`Upgrade Your Health for ${localProxy.healthUpgradeCost} Coins`);
+            if ((localProxy.healthMultiplier + localProxy.damageMultiplier - 2) > 5) {
+                achievements.add(steroids);
             }
-        });
-        upgradeDamage.click(() => {
-            if (coins >= localProxy.damageUpgradeCost) {
-                coins -= localProxy.damageUpgradeCost;
-                localProxy.damageMultiplier = localProxy.damageMultiplier + 1 / 3;
-                localProxy.damageUpgradeCost *= 1.5;
-                localProxy.damageUpgradeCost = Math.round(localProxy.damageUpgradeCost);
-                upgradeDamage.html(`Upgrade Your Damage for ${localProxy.damageUpgradeCost} Coins`);
+        }
+    });
+    upgradeDamage.click(() => {
+        if (coins >= localProxy.damageUpgradeCost) {
+            coins -= localProxy.damageUpgradeCost;
+            localProxy.damageMultiplier = localProxy.damageMultiplier + 1 / 3;
+            localProxy.damageUpgradeCost *= 1.5;
+            localProxy.damageUpgradeCost = Math.round(localProxy.damageUpgradeCost);
+            upgradeDamage.html(`Upgrade Your Damage for ${localProxy.damageUpgradeCost} Coins`);
+            if ((localProxy.healthMultiplier + localProxy.damageMultiplier - 2) > 5) {
+                achievements.add(steroids);
             }
-        });
-        backButton.click(openShop);
-        shopButtons.append(upgradeHealth);
-        shopButtons.append("<br>");
-        shopButtons.append("<br>");
-        shopButtons.append(upgradeDamage);
-        shopButtons.append("<br>");
-        shopButtons.append("<br>");
-        shopButtons.append(backButton);
-        menu.append(shopButtons);
-    }
-    //$("#selectLevel").click(levelSelectMenu);
+        }
+    });
+    backButton.click(openShop);
+    shopButtons.append(upgradeHealth);
+    shopButtons.append("<br>");
+    shopButtons.append("<br>");
+    shopButtons.append(upgradeDamage);
+    shopButtons.append("<br>");
+    shopButtons.append("<br>");
+    shopButtons.append(backButton);
+    menu.append(shopButtons);
+}
+const achievementMenu = () => {
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 30px; font-size:80px;" class="graytext">Achievements:</h1>`);
+    const achievementDisplay = $(`<div style="max-height:300px;width:600px;overflow:scroll;" class="w3-text-white">`);
+    achievementList.forEach(a => {
+        achievementDisplay.append(`
+        <div style="padding: 4px; max-height: 100px; border: 2px solid white;" class="w3-text-white w3-gray">
+        <h4 class="${localProxy.achievements.includes(a.title) ? "w3-text-white" : "graytext"}">${a.title}</h4>
+        <p class="${localProxy.achievements.includes(a.title) ? "w3-text-white" : "graytext"}"><em>${a.desc}</em></p>
+        </div>`);
+    });
+    const backButton = $(`<button id="back" style="margin-left:190px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    backButton.click(mainMenu);
+    const group = $(`<div style="text-align:left;">`);
+    group.append(achievementDisplay);
+    group.append($("<br>"))
+    group.append(backButton);
+    menu.append(group);
+
+}
 $(document).on("click", "#selectLevel", levelSelectMenu);
 $(document).on("click", "#shop", openShop);
+$(document).on("click", "#achievements", achievementMenu);
 $(document).on("click", "#instructions", () => {
+    achievements.add(bigBrain);
     $("#instructionModal").css("display", "block");
 })

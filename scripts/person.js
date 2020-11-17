@@ -659,6 +659,7 @@ function Person({
             }
             if (deadTimer === 254) {
                 if (type) {
+                    achievements.add(firstBlood);
                     for (let i = 0; i < coinAmount * max(round(strength / 0.5), 1); i++) {
                         coinList.push(Coin({
                             x: this.x + random(-30, 30),
@@ -666,6 +667,8 @@ function Person({
                             value: coinValue * max(round(strength / 0.2), 1) * 2
                         }));
                     }
+                } else {
+                    achievements.add(secondBlood);
                 }
             }
             if (this.deadBodyParts.includes(lowerArm1) && dist(this.x, this.y, player.x, player.y) > 600 && !boss) {
@@ -677,6 +680,13 @@ function Person({
                     part.restitution = 0;
                 }
             });
+            enemies.forEach(enemy => {
+                if (enemy.deadBodyParts.includes(enemy.head) && Detector.collisions([
+                        [weaponBox, enemy.head]
+                    ], engine).length > 0 && (abs(enemy.head.velocity.x) > 5 || abs(enemy.head.velocity.y) > 5)) {
+                    achievements.add(headsUp);
+                }
+            })
             this.deadBodyParts.forEach(part => {
                     part.frictionAir = 0;
                 })
@@ -1580,6 +1590,7 @@ function Person({
         },
         applyEffect(effect) {
             if (effect === "heal") {
+                achievements.add(medic);
                 this.bodyParts.forEach(part => {
                     if (part.health) {
                         const toAdd = 0.025 * ((localProxy.powerUpInfo.healthPotency - 1) / 0.25);
@@ -1590,6 +1601,7 @@ function Person({
                 });
                 timeSinceHeal = 1.75;
             } else if (effect === "strength") {
+                achievements.add(bodyBuilder);
                 tempDamageBoost = 1.25 + (0.125 * ((localProxy.powerUpInfo.strengthPotency - 1) / 0.25));
             }
         },
