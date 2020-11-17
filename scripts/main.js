@@ -299,6 +299,7 @@ function clearGameState() {
     bullets = [];
     coinList = [];
     powerupList = [];
+    emitters = [];
     player.add();
     tick = 0;
     wave = 0;
@@ -410,6 +411,9 @@ function draw() {
                 }
                 if (wave === 10) {
                     achievements.add(alexanderHamilton);
+                }
+                if (wave === 21) {
+                    achievements.add(allTheSenses);
                 }
                 if (wave === 50) {
                     achievements.add(tinPentecost);
@@ -585,6 +589,9 @@ const mainMenu = () => {
         <br>
         <br>
         <button id="achievements" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Achievements</button>
+        <br>
+        <br>
+        <button id="hats" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Hats</button>
         <br>
         <br>
         <button id="instructions" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Instructions</button>
@@ -906,11 +913,19 @@ const achievementMenu = () => {
     group.append($("<br>"))
     group.append(backButton);
     menu.append(group);
-
+};
+const hatSelect = () => {
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 190px; font-size:80px;" class="graytext">Hats:</h1>`);
+    const backButton = $(`<button id="back" style="margin-left:190px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    backButton.click(mainMenu);
+    const group = $(`<div style="text-align:left;">`);
+    group.append(backButton);
+    menu.append(group);
 }
 $(document).on("click", "#selectLevel", levelSelectMenu);
 $(document).on("click", "#shop", openShop);
 $(document).on("click", "#achievements", achievementMenu);
+$(document).on("click", "#hats", hatSelect);
 $(document).on("click", "#instructions", () => {
     achievements.add(bigBrain);
     $("#instructionModal").css("display", "block");

@@ -1592,7 +1592,7 @@ function Person({
             if (effect === "heal") {
                 achievements.add(medic);
                 this.bodyParts.forEach(part => {
-                    if (part.health) {
+                    if (part.health && !this.deadBodyParts.includes(part)) {
                         const toAdd = 0.025 * ((localProxy.powerUpInfo.healthPotency - 1) / 0.25);
                         const boost = random(0.05 + toAdd, 0.1 + toAdd) * part.maxHealth;
                         part.health += boost;
