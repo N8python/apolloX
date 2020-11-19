@@ -12,12 +12,14 @@ function displayAchievement({ title, desc, opacity, index }) {
 }
 
 function displayHatUnlock({ hat, opacity, index }) {
+    const xOffset = gameState === "play" ? (player.head.position.x - 300) : 0;
+    const yOffset = gameState === "play" ? (player.head.position.y - 300) : 0;
     fill(150, 150, 150, opacity * 255);
-    rect((player.head.position.x - 300) + 400 - (index % 3) * 200, (player.head.position.y - 300) + 500 - floor(index / 3) * 100, 201, 100);
+    rect(xOffset + 400 - (index % 3) * 200, yOffset + 500 - floor(index / 3) * 100, 201, 100);
     fill(255, 255, 255, opacity * 255);
     textAlign(CENTER);
     textSize(25);
-    text(hat + "\nUnlocked!", (player.head.position.x - 300) + 500 - (index % 3) * 200, (player.head.position.y - 300) + 550 - floor(index / 3) * 100);
+    text(hat + "\nUnlocked!", xOffset + 500 - (index % 3) * 200, yOffset + 550 - floor(index / 3) * 100);
 }
 /*const pieceOfCake = { title: "Piece of Cake", desc: "Beat easy difficulty. \n Easiest achievement of all time.", hatsUnlocked: ["cake"] };
 const fightScene = { title: "Fight Scene", desc: "Beat medium difficulty. \n A decent challenge.", hatsUnlocked: ["cap"] };
@@ -39,37 +41,67 @@ const benFranklin = { title: "Ben Franklin", desc: "Win a hundred games in a row
 const technoblade = { title: "Technoblade", desc: "Play two hundred games.", hatsUnlocked: ["techno"] };
 const hacker = { title: "Hacker", desc: "For extremely cool people only, so you have to figure it out.", hatsUnlocked: ["sunglasses"] };
 */
-const firstBlood = { title: "First Blood", desc: "Kill an enemy." };
+const firstBlood = { title: "First Blood", desc: "Kill an enemy.", hatsUnlocked: ["swordHat"] };
 const secondBlood = { title: "Second Blood", desc: "Get killed by an enemy \n(or just die like a noob)." };
-const bigBrain = { title: "Big Brain", desc: "Open the instructions screen." };
-const clutchGod = { title: "Clutch God", desc: "Win a level with less than\n one fifth of your health\n remaining." };
-const spaceEagle = { title: "Space Eagle", desc: "Acquire the pistol." };
-const roundTable = { title: "Round Table", desc: "Acquire the laser lance." };
-const rubiedOn = { title: "Rubied On", desc: "Acquire the railgun." };
-const fourthState = { title: "Fourth State", desc: "Acquire the plasma rifle." };
-const mobyStar = { title: "Moby's Star", desc: "Acquire the harpoon." };
-const medic = { title: "Medic", desc: "Use a health power up." };
-const bodyBuilder = { title: "Body Builder", desc: "Use a strength power up." };
-const doctor = { title: "Doctor", desc: "Upgrade the health power up." };
-const hercules = { title: "Hercules", desc: "Upgrade the strength power up." };
-const tickSpeed = { title: "Tick Speed", desc: "Upgrade the speed at which a \npower up spawns." };
-const steroids = { title: "Steroids", desc: "Upgrade your character’s damage\n and health a total of\n 15 times." };
-const jeffBezos = { title: "Jeff Bezos", desc: "Have 999 coins in the bank." };
-const johnDRockefeller = { title: "John D. Rockefeller", desc: "Have 9999 coins in the bank." };
-const mansaMusa = { title: "Mansa Musa", desc: "Have 99999 coins in the bank." };
-const moonLanding = { title: "Moon Landing", desc: "Beat all 10 levels of\nthe main game." }
-const georgeWashington = { title: "George Washington", desc: "Complete one wave on endless." };
-const theSenses = { title: "The Senses", desc: "Complete five waves on endless." };
-const alexanderHamilton = { title: "Alexander Hamilton", desc: "Complete ten waves on endless." };
-const allTheSenses = { title: "All the Senses", desc: "Complete twenty one waves\n on endless." };
-const tinPentecost = { title: "Tin Pentecost", desc: "Complete fifty waves on endless." };
-const benFranklin = { title: "Ben Franklin", desc: "Complete one hundred waves\n on endless." };
-const headsUp = { title: "Heads Up", desc: "Play with an enemy's \n decapitated head." };
-const sweatlord = { title: "Sweatlord", desc: "Complete all achievements\n (except this one)." };
+const bigBrain = { title: "Big Brain", desc: "Open the instructions screen.", hatsUnlocked: ["brain"] };
+const clutchGod = { title: "Clutch God", desc: "Win a level with less than\n one fifth of your health\n remaining.", hatsUnlocked: ["waterBucket"] };
+const spaceEagle = { title: "Space Eagle", desc: "Acquire the pistol.", hatsUnlocked: ["baldEagle"] };
+const roundTable = { title: "Round Table", desc: "Acquire the laser lance.", hatsUnlocked: ["table"] };
+const rubiedOn = { title: "Rubied On", desc: "Acquire the railgun.", hatsUnlocked: ["ruby"] };
+const fourthState = { title: "Fourth State", desc: "Acquire the plasma rifle.", hatsUnlocked: ["four"] };
+const mobyStar = { title: "Moby's Star", desc: "Acquire the harpoon.", hatsUnlocked: ["whale"] };
+const medic = { title: "Medic", desc: "Use a health power up.", hatsUnlocked: ["redcross"] };
+const bodyBuilder = { title: "Body Builder", desc: "Use a strength power up.", hatsUnlocked: ["dumbbells"] };
+const doctor = { title: "Doctor", desc: "Upgrade the health power up.", hatsUnlocked: ["stethoscope"] };
+const hercules = { title: "Hercules", desc: "Upgrade the strength power up.", hatsUnlocked: ["temple"] };
+const tickSpeed = { title: "Tick Speed", desc: "Upgrade the speed at which a \npower up spawns.", hatsUnlocked: ["clock"] };
+const steroids = { title: "Steroids", desc: "Upgrade your character’s damage\n and health a total of\n 15 times.", hatsUnlocked: ["donut"] };
+const jeffBezos = { title: "Jeff Bezos", desc: "Have 999 coins in the bank.", hatsUnlocked: ["jeffBezos"] };
+const johnDRockefeller = { title: "John D. Rockefeller", desc: "Have 9999 coins in the bank.", hatsUnlocked: ["rockefeller"] };
+const mansaMusa = { title: "Mansa Musa", desc: "Have 99999 coins in the bank.", hatsUnlocked: ["mansaMusa"] };
+const ironResolve = { title: "Iron Resolve", desc: "Beat level five of\n the main game.", hatsUnlocked: ["thatcher"] };
+const moonLanding = { title: "Moon Landing", desc: "Beat all 10 levels of\nthe main game.", hatsUnlocked: ["lunarRover"] }
+const georgeWashington = { title: "George Washington", desc: "Complete one wave on endless.", hatsUnlocked: ["washington"] };
+const theSenses = { title: "The Senses", desc: "Complete five waves on endless.", hatsUnlocked: ["disguise"] };
+const alexanderHamilton = { title: "Alexander Hamilton", desc: "Complete ten waves on endless.", hatsUnlocked: ["hamilton"] };
+const allTheSenses = { title: "All the Senses", desc: "Complete twenty one waves\n on endless.", hatsUnlocked: ["tophat"] };
+const tinPentecost = { title: "Tin Pentecost", desc: "Complete fifty waves on endless.", hatsUnlocked: ["tinfoilhat"] };
+const benFranklin = { title: "Ben Franklin", desc: "Complete one hundred waves\n on endless.", hatsUnlocked: ["ben"] };
+const marieCurie = { title: "Marie Curie", desc: "Complete two hundred waves\n on endless.", hatsUnlocked: ["curie"] }
+const headsUp = { title: "Heads Up", desc: "Play with an enemy's \n decapitated head.", hatsUnlocked: ["head"] };
+const sweatlord = { title: "Sweatlord", desc: "Complete all achievements\n (except this one).", hatsUnlocked: ["sweat"] };
 const displayHats = {
     "spaceHelmet": "Space Helmet",
+    "swordHat": "Sword Hat",
+    "waterBucket": "Water Bucket",
+    "baldEagle": "Eagle Hat",
+    "table": "Table Hat",
+    "ruby": "Ruby Hat",
+    "four": "Four Hat",
+    "whale": "Whale Hat",
+    "redcross": "Red Cross Hat",
+    "dumbbells": "Dumbbells Hat",
+    "stethoscope": "Stethoscope Hat",
+    "temple": "Temple Hat",
+    "clock": "Clock Head",
+    "donut": "Donut Hat",
+    "brain": "Brain Head",
+    "jeffBezos": "Jeff Bezos Head",
+    "rockefeller": "Rockefeller",
+    "mansaMusa": "Mansa Musa Head",
+    "thatcher": "Thatcher Hat",
+    "lunarRover": "Lunar Rover Head",
+    "washington": "Washington Head",
+    "disguise": "Disguise Hat",
+    "hamilton": "Hamilton Head",
+    "tophat": "Top Hat",
+    "tinfoilhat": "Tinfoil Hat",
+    "ben": "Ben Franklin Head",
+    "curie": "Marie Curie Head",
+    "head": "Head Hat",
+    "sweat": "Sweat Hat",
 }
-const achievementList = [firstBlood, secondBlood, bigBrain, clutchGod, spaceEagle, roundTable, rubiedOn, fourthState, mobyStar, medic, bodyBuilder, doctor, hercules, tickSpeed, steroids, jeffBezos, johnDRockefeller, mansaMusa, moonLanding, georgeWashington, theSenses, alexanderHamilton, allTheSenses, tinPentecost, benFranklin, headsUp, sweatlord];
+const achievementList = [firstBlood, secondBlood, bigBrain, clutchGod, spaceEagle, roundTable, rubiedOn, fourthState, mobyStar, medic, bodyBuilder, doctor, hercules, tickSpeed, steroids, jeffBezos, johnDRockefeller, mansaMusa, ironResolve, moonLanding, georgeWashington, theSenses, alexanderHamilton, allTheSenses, tinPentecost, benFranklin, marieCurie, headsUp, sweatlord];
 const achievements = {
     currAchievements: [],
     currHatsUnlocked: [],

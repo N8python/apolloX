@@ -1490,7 +1490,7 @@ function Person({
                 if (hat) {
                     push();
                     translate(head.position.x, head.position.y);
-                    rotate((hat === hats.spaceHelmet || hat === hats.evilHelmet) && !this.deadBodyParts.includes(head) ? torso.angle : head.angle);
+                    rotate((![hats.swordHat, hats.disguise, hats.tophat, hats.tinfoilhat, hats.sweat].includes(hat)) && !this.deadBodyParts.includes(head) ? torso.angle : head.angle);
                     //tint(255, deadTimer);
                     image(hat, hat.xOffset, hat.yOffset, hat.customWidth ? hat.customWidth : 60, hat.customHeight ? hat.customHeight : 60);
                     //noTint();

@@ -27,6 +27,7 @@ let levelNum;
 let level;
 let gameState = "start";
 let maxLevelUnlocked = 0;
+let currHat;
 let currentWeapon;
 let powerUpInfo = {
     healthSpawnRate: 0.001,
@@ -102,6 +103,9 @@ if (localProxy.unlockedHats === undefined) {
 if (localProxy.hat === undefined) {
     localProxy.hat = "spaceHelmet";
 }
+
+currHat = localProxy.hat;
+
 const weapons = {
     "lazord": {
         weapon: () => lazord,
@@ -184,11 +188,181 @@ function preload() {
     hats.spaceHelmet.yOffset = -30;
     hats.spaceHelmet.customWidth = 50;
     hats.spaceHelmet.customHeight = 50;
+    hats.spaceHelmet.sourceFile = "assets/spacehat.png";
     hats.evilHelmet = loadImage("assets/evilhelmet.png");
     hats.evilHelmet.xOffset = -25;
     hats.evilHelmet.yOffset = -30;
     hats.evilHelmet.customWidth = 50;
     hats.evilHelmet.customHeight = 50;
+    hats.evilHelmet.sourceFile = "assets/evilhelmet.png";
+    hats.swordHat = loadImage("assets/hats/swordHat.png");
+    hats.swordHat.xOffset = -30;
+    hats.swordHat.yOffset = -50;
+    hats.swordHat.customWidth = 50;
+    hats.swordHat.customHeight = 50;
+    hats.swordHat.sourceFile = "assets/hats/swordHat.png";
+    hats.waterBucket = loadImage("assets/hats/waterbucket.png");
+    hats.waterBucket.xOffset = -25;
+    hats.waterBucket.yOffset = -55;
+    hats.waterBucket.customWidth = 50;
+    hats.waterBucket.customHeight = 50;
+    hats.waterBucket.sourceFile = "assets/hats/waterbucket.png";
+    hats.baldEagle = loadImage("assets/hats/baldEagle.png");
+    hats.baldEagle.xOffset = -50;
+    hats.baldEagle.yOffset = -55;
+    hats.baldEagle.customWidth = 100;
+    hats.baldEagle.customHeight = 50;
+    hats.baldEagle.sourceFile = "assets/hats/baldEagle.png";
+    hats.table = loadImage("assets/hats/tableHat.png");
+    hats.table.xOffset = -25;
+    hats.table.yOffset = -30;
+    hats.table.customWidth = 50;
+    hats.table.customHeight = 50;
+    hats.table.sourceFile = "assets/hats/tableHat.png";
+    hats.ruby = loadImage("assets/hats/ruby.png");
+    hats.ruby.xOffset = -25;
+    hats.ruby.yOffset = -65;
+    hats.ruby.customWidth = 50;
+    hats.ruby.customHeight = 50;
+    hats.ruby.sourceFile = "assets/hats/ruby.png";
+    hats.four = loadImage("assets/hats/four.png");
+    hats.four.xOffset = -32.5;
+    hats.four.yOffset = -87.5;
+    hats.four.customWidth = 50;
+    hats.four.customHeight = 75;
+    hats.four.sourceFile = "assets/hats/four.png";
+    hats.whale = loadImage("assets/hats/whale.png");
+    hats.whale.xOffset = -25;
+    hats.whale.yOffset = -60;
+    hats.whale.customWidth = 50;
+    hats.whale.customHeight = 50;
+    hats.whale.sourceFile = "assets/hats/whale.png";
+    hats.redcross = loadImage("assets/hats/redcross.png");
+    hats.redcross.xOffset = -25;
+    hats.redcross.yOffset = -63;
+    hats.redcross.customWidth = 50;
+    hats.redcross.customHeight = 50;
+    hats.redcross.sourceFile = "assets/hats/redcross.png";
+    hats.dumbbells = loadImage("assets/hats/dumbbells.png");
+    hats.dumbbells.xOffset = -25;
+    hats.dumbbells.yOffset = -90;
+    hats.dumbbells.customWidth = 50;
+    hats.dumbbells.customHeight = 75;
+    hats.dumbbells.sourceFile = "assets/hats/dumbbells.png";
+    hats.stethoscope = loadImage("assets/hats/stethoscope.png");
+    hats.stethoscope.xOffset = -34;
+    hats.stethoscope.yOffset = -15;
+    hats.stethoscope.customWidth = 50;
+    hats.stethoscope.customHeight = 50;
+    hats.stethoscope.sourceFile = "assets/hats/stethoscope.png";
+    hats.temple = loadImage("assets/hats/temple.png");
+    hats.temple.xOffset = -25;
+    hats.temple.yOffset = -62.5;
+    hats.temple.customWidth = 50;
+    hats.temple.customHeight = 50;
+    hats.temple.sourceFile = "assets/hats/temple.png";
+    hats.clock = loadImage("assets/hats/clock.png");
+    hats.clock.xOffset = -22.5;
+    hats.clock.yOffset = -22.5;
+    hats.clock.customWidth = 45;
+    hats.clock.customHeight = 45;
+    hats.clock.sourceFile = "assets/hats/clock.png";
+    hats.donut = loadImage("assets/hats/donut.png");
+    hats.donut.xOffset = -75 / 2;
+    hats.donut.yOffset = -75 / 2;
+    hats.donut.customWidth = 75;
+    hats.donut.customHeight = 75;
+    hats.donut.sourceFile = "assets/hats/donut.png";
+    hats.brain = loadImage("assets/hats/brain.png");
+    hats.brain.xOffset = -(45 * 4 / 3) / 2;
+    hats.brain.yOffset = -22.5;
+    hats.brain.customWidth = 45 * 4 / 3;
+    hats.brain.customHeight = 45;
+    hats.brain.sourceFile = "assets/hats/brain.png";
+    hats.jeffBezos = loadImage("assets/hats/jeffBezos.png");
+    hats.jeffBezos.xOffset = -22.5;
+    hats.jeffBezos.yOffset = -22.5;
+    hats.jeffBezos.customWidth = 45;
+    hats.jeffBezos.customHeight = 65;
+    hats.jeffBezos.sourceFile = "assets/hats/jeffBezos.png";
+    hats.rockefeller = loadImage("assets/hats/rockefeller.png");
+    hats.rockefeller.xOffset = -22.5;
+    hats.rockefeller.yOffset = -22.5;
+    hats.rockefeller.customWidth = 45;
+    hats.rockefeller.customHeight = 55;
+    hats.rockefeller.sourceFile = "assets/hats/rockefeller.png";
+    hats.mansaMusa = loadImage("assets/hats/mansaMusa.png");
+    hats.mansaMusa.xOffset = -22.5;
+    hats.mansaMusa.yOffset = -22.5;
+    hats.mansaMusa.customWidth = 45;
+    hats.mansaMusa.customHeight = 62;
+    hats.mansaMusa.sourceFile = "assets/hats/mansaMusa.png";
+    hats.thatcher = loadImage("assets/hats/thatcher.png");
+    hats.thatcher.xOffset = -25;
+    hats.thatcher.yOffset = -55 / 2;
+    hats.thatcher.customWidth = 50;
+    hats.thatcher.customHeight = 55;
+    hats.thatcher.sourceFile = "assets/hats/thatcher.png";
+    hats.lunarRover = loadImage("assets/hats/lunarrover.png");
+    hats.lunarRover.xOffset = -25;
+    hats.lunarRover.yOffset = -57.5;
+    hats.lunarRover.customWidth = 50;
+    hats.lunarRover.customHeight = 50;
+    hats.lunarRover.sourceFile = "assets/hats/lunarrover.png";
+    hats.washington = loadImage("assets/hats/washington.png");
+    hats.washington.xOffset = -25;
+    hats.washington.yOffset = -25;
+    hats.washington.customWidth = 50;
+    hats.washington.customHeight = 50;
+    hats.washington.sourceFile = "assets/hats/washington.png";
+    hats.hamilton = loadImage("assets/hats/hamilton.png");
+    hats.hamilton.xOffset = -25;
+    hats.hamilton.yOffset = -25;
+    hats.hamilton.customWidth = 50;
+    hats.hamilton.customHeight = 50;
+    hats.hamilton.sourceFile = "assets/hats/hamilton.png";
+    hats.disguise = loadImage("assets/hats/disguise.png");
+    hats.disguise.xOffset = -15;
+    hats.disguise.yOffset = -12.5;
+    hats.disguise.customWidth = 30;
+    hats.disguise.customHeight = 30;
+    hats.disguise.sourceFile = "assets/hats/disguise.png";
+    hats.tophat = loadImage("assets/hats/tophat.png");
+    hats.tophat.xOffset = -25;
+    hats.tophat.yOffset = -25;
+    hats.tophat.customWidth = 50;
+    hats.tophat.customHeight = 25;
+    hats.tophat.sourceFile = "assets/hats/tophat.png";
+    hats.tinfoilhat = loadImage("assets/hats/tinfoilhat.png");
+    hats.tinfoilhat.xOffset = -25;
+    hats.tinfoilhat.yOffset = -25;
+    hats.tinfoilhat.customWidth = 50;
+    hats.tinfoilhat.customHeight = 25;
+    hats.tinfoilhat.sourceFile = "assets/hats/tinfoilhat.png";
+    hats.ben = loadImage("assets/hats/benfranklin.png");
+    hats.ben.xOffset = -25;
+    hats.ben.yOffset = -25;
+    hats.ben.customWidth = 50;
+    hats.ben.customHeight = 50;
+    hats.ben.sourceFile = "assets/hats/benfranklin.png";
+    hats.curie = loadImage("assets/hats/curie.png");
+    hats.curie.xOffset = -25;
+    hats.curie.yOffset = -25;
+    hats.curie.customWidth = 50;
+    hats.curie.customHeight = 50;
+    hats.curie.sourceFile = "assets/hats/curie.png";
+    hats.head = loadImage("assets/hats/head.png");
+    hats.head.xOffset = -31 / 2;
+    hats.head.yOffset = -45;
+    hats.head.customWidth = 31;
+    hats.head.customHeight = 30;
+    hats.head.sourceFile = "assets/hats/head.png";
+    hats.sweat = loadImage("assets/hats/sweat.png");
+    hats.sweat.xOffset = 15;
+    hats.sweat.yOffset = -25 / 2;
+    hats.sweat.customWidth = 25;
+    hats.sweat.customHeight = 25;
+    hats.sweat.sourceFile = "assets/hats/sweat.png";
     powerups.heart = loadImage("assets/heart.png");
     powerups.heart.xOffset = 0;
     powerups.heart.yOffset = 2.5;
@@ -229,7 +403,7 @@ function setup() {
         y: 0,
         category: 2,
         weapon: currentWeapon,
-        hat: "spaceHelmet",
+        hat: currHat,
         strength: 2
     });
     //powerupList.push(heartPowerup(60, 60), damagePowerup(0, 0));
@@ -289,7 +463,7 @@ function clearGameState() {
         y: 0,
         category: 2,
         weapon: currentWeapon,
-        hat: "spaceHelmet",
+        hat: currHat,
         strength: 2
     });
     enemies.forEach(enemy => {
@@ -321,6 +495,7 @@ function reset() {
 function draw() {
     coins = min(coins, 99999);
     coins = round(coins);
+    localProxy.unlockedHats = Array.from(new Set(localProxy.unlockedHats));
     if (coins >= 999) {
         achievements.add(jeffBezos);
     }
@@ -420,6 +595,9 @@ function draw() {
                 }
                 if (wave === 100) {
                     achievements.add(benFranklin);
+                }
+                if (wave === 200) {
+                    achievements.add(marieCurie);
                 }
                 wave++;
                 if (wave > localProxy.waveRecord) {
@@ -692,6 +870,9 @@ const displayVictory = () => {
     if (player.getHealth() < 0.2) {
         achievements.add(clutchGod);
     }
+    if (levelNum === 4) {
+        achievements.add(ironResolve);
+    }
     if (levelNum === 9) {
         achievements.add(moonLanding);
     }
@@ -915,11 +1096,57 @@ const achievementMenu = () => {
     menu.append(group);
 };
 const hatSelect = () => {
-    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 190px; font-size:80px;" class="graytext">Hats:</h1>`);
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 200px; font-size:80px;" class="graytext">Hats:</h1>`);
     const backButton = $(`<button id="back" style="margin-left:190px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
     backButton.click(mainMenu);
     const group = $(`<div style="text-align:left;">`);
+    const refinedHats = Object.fromEntries(Object.entries(hats).filter(([hatname, _]) => localProxy.unlockedHats.includes(hatname)));
+    let currHatIndex = Object.keys(refinedHats).indexOf(currHat);
+    const [hatname, hat] = Object.entries(refinedHats)[currHatIndex];
+    currHat = hatname;
+    clearGameState();
+    const img = document.createElement("img");
+    img.src = hat.sourceFile;
+    const back = document.createElement("button");
+    back.innerHTML = "<";
+    const forward = document.createElement("button");
+    forward.innerHTML = ">";
+    back.style.marginLeft = "75px";
+    img.width = 300;
+    img.height = 300;
+    img.style.border = "5px solid white";
+    img.style.backgroundColor = "white";
+    img.style.marginLeft = "50px";
+    back.onclick = () => {
+        currHatIndex -= 1;
+        if (currHatIndex < 0) {
+            currHatIndex = Object.values(refinedHats).length - 1;
+        }
+        img.src = Object.values(refinedHats)[currHatIndex].sourceFile;
+        currHat = Object.keys(refinedHats)[currHatIndex];
+        clearGameState();
+        localProxy.hat = currHat;
+    }
+    forward.style.marginLeft = "32px";
+    forward.onclick = () => {
+        currHatIndex += 1;
+        if (currHatIndex > Object.values(refinedHats).length - 1) {
+            currHatIndex = 0;
+        }
+        img.src = Object.values(refinedHats)[currHatIndex].sourceFile;
+        currHat = Object.keys(refinedHats)[currHatIndex];
+        clearGameState();
+        localProxy.hat = currHat;
+    }
+    group.append($(back));
+    group.append($(img));
+    group.append($(forward));
+    group.append($(document.createElement("br")));
+    group.append($(document.createElement("br")));
+    group.append($(backButton));
     group.append(backButton);
+    menu.append(group);
+
     menu.append(group);
 }
 $(document).on("click", "#selectLevel", levelSelectMenu);
