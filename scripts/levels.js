@@ -6,14 +6,14 @@ const levels = [{
 }, {
     0: [melee(0.3), melee(0.3)],
     [60 * 6]: [ranged(0.2), ranged(0.2), ranged(0.2)],
-    [60 * 24]: [ranged(0.4), ranged(0.4), meleeHeavy(0.2), melee(0.3)],
+    [60 * 24]: [ranged(0.2), ranged(0.2), meleeHeavy(0.2), melee(0.3)],
     [60 * 36]: [meleeRanged(0.2), meleeRanged(0.2), ranged(0.1)],
 }, {
     0: [meleeRanged(0.2), meleeRanged(0.2), meleeRanged(0.2), meleeRanged(0.2)],
     [60 * 6]: [ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2)],
     [60 * 12]: [melee(0.2), melee(0.2), melee(0.2), melee(0.2), melee(0.2), meleeRanged(0.4)],
-    [60 * 30]: [melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1)],
-    [60 * 42]: [meleeRanged(0.8)]
+    [60 * 30]: [melee(0.1), melee(0.1), melee(0.1), melee(0.1), melee(0.1)],
+    [60 * 42]: [meleeRanged(0.6)]
 }, {
     0: [ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2), ranged(0.2)],
     [60 * 6]: [melee(0.2), melee(0.2), melee(0.2), melee(0.2), melee(0.2)],

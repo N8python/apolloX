@@ -391,7 +391,7 @@ let moonX;
 let moonY;
 
 function setup() {
-    createCanvas(600, 600);
+    createCanvas(1000, 700);
     starSeed = floor(random(0, 1000));
     engine = Engine.create({
         enableSleeping: true
@@ -511,11 +511,11 @@ function draw() {
     localStorage.coins = coins;
     localStorage.maxLevelUnlocked = maxLevelUnlocked;
     background(0);
-    image(coin, 450 + 80 - 11 * (coins.toString().length - 1), 10, 30, 30);
+    image(coin, 450 + 80 - 11 * (coins.toString().length - 1) + 400, 10, 30, 30);
     fill(255);
     textAlign(CENTER);
     textSize(30);
-    text(coins, 495 + 80 - 4 * (coins.toString().length - 1), 35);
+    text(coins, 495 + 80 - 4 * (coins.toString().length - 1) + 400, 35);
     sounds.track1.setVolume(localProxy.musicVolume);
     if (gameState === "play") {
         if (!sounds.track1.isPlaying()) {
@@ -611,7 +611,7 @@ function draw() {
         if (Math.random() < localProxy.powerUpInfo.strengthSpawnRate && !player.dead && !paused) {
             powerupList.push(damagePowerup(player.head.position.x + random(100, 200) * (random() < 0.5 ? 1 : -1), player.head.position.y + random(100, 200) * (random() < 0.5 ? 1 : -1)));
         }
-        translate(300 - player.head.position.x, 300 - player.head.position.y);
+        translate(500 - player.head.position.x, 350 - player.head.position.y);
         noStroke();
         fill(0, 225, 225);
         rect(-2000, -2000, 4000, 4000);
@@ -646,18 +646,18 @@ function draw() {
         strokeWeight(3);
         stroke(120);
         fill(60);
-        rect(player.head.position.x - 298, player.head.position.y - 298, 100, 10);
+        rect(player.head.position.x - 298 - 200, player.head.position.y - 298 - 50, 100, 10);
         fill(255)
         noStroke();
-        rect(player.head.position.x - 297, player.head.position.y - 296.5, 98 * player.getHealth(), 7);
+        rect(player.head.position.x - 297 - 200, player.head.position.y - 296.5 - 50, 98 * player.getHealth(), 7);
         if (player.holdingRangedWeapon()) {
             strokeWeight(3);
             stroke(120);
             fill(60);
-            rect(player.head.position.x - 298, player.head.position.y - 298 + 11, 100, 10);
+            rect(player.head.position.x - 298 - 200, player.head.position.y - 298 - 50 + 11, 100, 10);
             fill(0, 255, 255);
             noStroke();
-            rect(player.head.position.x - 297, player.head.position.y - 296.5 + 11, 98 * player.cooldown, 7);
+            rect(player.head.position.x - 297 - 200, player.head.position.y - 296.5 - 50 + 11, 98 * player.cooldown, 7);
         }
         if (levelNum === 9) {
             const boss = enemies.find(e => e.boss);
@@ -665,33 +665,33 @@ function draw() {
                 strokeWeight(3);
                 stroke(120);
                 fill(60);
-                rect(player.head.position.x - 298 + 100, player.head.position.y - 298, 100, 10);
+                rect(player.head.position.x - 298 + 100 - 200, player.head.position.y - 298 - 50, 100, 10);
                 fill(255, 0, 0)
                 noStroke();
-                rect(player.head.position.x - 297 + 100, player.head.position.y - 296.5, 98 * boss.getHealth(), 7);
+                rect(player.head.position.x - 297 + 100 - 200, player.head.position.y - 296.5 - 50, 98 * boss.getHealth(), 7);
             }
         } else if (levelNum === 10) {
             fill(255);
             textAlign(LEFT);
             textSize(15);
-            text("Wave: " + wave, player.head.position.x - 294 + 100, player.head.position.y - 286);
-            text("Wave Record: " + localProxy.waveRecord, player.head.position.x - 294 + 100, player.head.position.y - 266);
+            text("Wave: " + wave, player.head.position.x - 294 + 100 - 200, player.head.position.y - 286 - 50);
+            text("Wave Record: " + localProxy.waveRecord, player.head.position.x - 294 + 100 - 200, player.head.position.y - 266 - 50);
         } else {
             const maxTick = Math.max(...Object.keys(level));
             const progression = min(tick / maxTick, 1);
             strokeWeight(3);
             stroke(120);
             fill(60);
-            rect(player.head.position.x - 298 + 100, player.head.position.y - 298, 100, 10);
+            rect(player.head.position.x - 298 + 100 - 200, player.head.position.y - 298 - 50, 100, 10);
             fill(0, 255, 0)
             noStroke();
-            rect(player.head.position.x - 297 + 100, player.head.position.y - 296.5, 98 * progression, 7);
+            rect(player.head.position.x - 297 + 100 - 200, player.head.position.y - 296.5 - 50, 98 * progression, 7);
         }
         fill(255);
-        image(coin, player.head.position.x + 170 - 11 * (coins.toString().length - 1), player.head.position.y - 290, 30, 30);
+        image(coin, player.head.position.x + 170 - 11 * (coins.toString().length - 1) - 200 + 400, player.head.position.y - 290 - 50, 30, 30);
         textAlign(CENTER);
         textSize(30);
-        text(coins, player.head.position.x + 200 - 4 * (coins.toString().length - 1), player.head.position.y - 290, 35);
+        text(coins, player.head.position.x + 200 - 4 * (coins.toString().length - 1) - 200 + 400, player.head.position.y - 290 - 50, 35);
         if (player.x < -2100 || player.x > 2100 || player.y < -2100 || player.y > 2100) {
             player.die();
         }
@@ -758,32 +758,32 @@ settings.click(() => {
 const menu = $("#menu");
 const mainMenu = () => {
     menu.html(`
-    <h1 class="w3-text-white" style="margin-left:130px;font-size:80px;" class="graytext">Apollo X</h1>
+    <h1 class="w3-text-white" style="margin-left:330px;font-size:80px;" class="graytext">Apollo X</h1>
         <br>
-        <button id="selectLevel" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Level Select</button>
-        <br>
-        <br>
-        <button id="shop" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Shop</button>
+        <button id="selectLevel" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Level Select</button>
         <br>
         <br>
-        <button id="achievements" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Achievements</button>
+        <button id="shop" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Shop</button>
         <br>
         <br>
-        <button id="hats" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Hats</button>
+        <button id="achievements" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Achievements</button>
         <br>
         <br>
-        <button id="instructions" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Instructions</button>
+        <button id="hats" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Hats</button>
+        <br>
+        <br>
+        <button id="instructions" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Instructions</button>
     `);
 }
 const levelSelectMenu = () => {
-    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 70px; font-size:80px;" class="graytext">Level Select</h1>`);
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 270px; font-size:80px;" class="graytext">Level Select</h1>`);
     const levelButtons = $("<div>");
-    levelButtons.css("margin-left", "85px");
+    levelButtons.css("margin-left", "285px");
     levelButtons.css("text-align", "left");
-    const startButton = $(`<button id="start" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Start</button>`);
+    const startButton = $(`<button id="start" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Start</button>`);
     startButton.css("display", "none");
-    const endlessButton = $(`<button id="endless" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Endless</button>`);
-    const backButton = $(`<button id="back" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    const endlessButton = $(`<button id="endless" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Endless</button>`);
+    const backButton = $(`<button id="back" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
     let currLevel;
     Array(10).fill(undefined).forEach((_, i) => {
         levelButtons.append(`<button id="level${i}" class="w3-padding w3-margin w3-button w3-gray w3-xlarge w3-text-white w3-round" ${i <= maxLevelUnlocked ? "" : "disabled"}>${i + 1}</button>`);
@@ -831,21 +831,21 @@ const levelSelectMenu = () => {
 };
 const settingsMenu = () => {
     menu.html(``)
-    const exitButton = $(`<button id="start" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Exit</button>`);
+    const exitButton = $(`<button id="start" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Exit</button>`);
     exitButton.click(() => {
         levelSelectMenu();
         paused = false;
         gameState = "start";
         clearGameState();
     });
-    const resumeButton = $(`<button id="start" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Resume</button>`);
+    const resumeButton = $(`<button id="start" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Resume</button>`);
     resumeButton.click(() => {
         paused = false;
         menu.html(``);
     });
-    const musicVolume = $(`<input style="position:relative;top:4px;margin-left:4px;" type="range" min="0" max="100" value="100">`);
+    const musicVolume = $(`<input style="position:relative;top:4px;margin-left:204px;" type="range" min="0" max="100" value="100">`);
     musicVolume.css("margin-top", "180px");
-    const soundEffectsVolume = $(`<input style="position:relative;top:4px;margin-left:18px;" type="range" min="0" max="100" value="100">`);
+    const soundEffectsVolume = $(`<input style="position:relative;top:4px;margin-left:218px;" type="range" min="0" max="100" value="100">`);
     musicVolume.val(Math.round(localProxy.musicVolume * 100));
     soundEffectsVolume.val(Math.round(localProxy.sfxVolume * 100));
     musicVolume.on("input", () => {
@@ -854,10 +854,10 @@ const settingsMenu = () => {
     soundEffectsVolume.on("input", () => {
         localProxy.sfxVolume = soundEffectsVolume.val() / 100;
     });
-    menu.append($(`<label style="margin-left: 185px;" class="w3-text-white">Music Volume:</label>`))
+    menu.append($(`<label style="margin-left: 385px;" class="w3-text-white">Music Volume:</label>`))
     menu.append(musicVolume);
     menu.append($("<br>"));
-    menu.append($(`<label style="margin-left: 185px" class="w3-text-white">SFX Volume:</label>`))
+    menu.append($(`<label style="margin-left: 385px" class="w3-text-white">SFX Volume:</label>`))
     menu.append(soundEffectsVolume);
     menu.append($("<br>"));
     menu.append($("<br>"));
@@ -879,8 +879,8 @@ const displayVictory = () => {
     menu.html(``);
     const victoryMessage = $("<div>");
     victoryMessage.addClass("w3-animate-opacity");
-    victoryMessage.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 140px; margin-top:200px; font-size:80px;" class="graytext">Victory!</h1>`);
-    const backButton = $(`<button id="back" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    victoryMessage.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 340px; margin-top:200px; font-size:80px;" class="graytext">Victory!</h1>`);
+    const backButton = $(`<button id="back" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
     backButton.click(() => {
         levelSelectMenu();
         paused = false;
@@ -894,15 +894,15 @@ const displayLoss = () => {
     menu.html(``);
     const victoryMessage = $("<div>");
     victoryMessage.addClass("w3-animate-opacity");
-    victoryMessage.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 115px; margin-top:200px; font-size:80px;" class="graytext">You Died!</h1>`);
-    const backButton = $(`<button id="back" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    victoryMessage.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 315px; margin-top:200px; font-size:80px;" class="graytext">You Died!</h1>`);
+    const backButton = $(`<button id="back" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
     backButton.click(() => {
         levelSelectMenu();
         paused = false;
         gameState = "start";
         clearGameState();
     });
-    const restartButton = $(`<button id="restart" style="margin-left:185px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Restart</button>`);
+    const restartButton = $(`<button id="restart" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Restart</button>`);
     restartButton.click(() => {
         clearGameState();
         gameState = "play";
@@ -916,16 +916,16 @@ const displayLoss = () => {
     menu.append(victoryMessage);
 }
 const openShop = () => {
-    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 175px; font-size:80px;" class="graytext">Shop:</h1>`);
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 375px; font-size:80px;" class="graytext">Shop:</h1>`);
     const shopButtons = $("<div>");
     shopButtons.css("text-align", "left");
-    const backButton = $(`<button id="back" style="margin-left:180px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    const backButton = $(`<button id="back" style="margin-left:380px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
     backButton.click(mainMenu);
-    const characterButton = $(`<button id="character" style="margin-left:180px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Character</button>`);
+    const characterButton = $(`<button id="character" style="margin-left:380px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Character</button>`);
     characterButton.click(characterShop);
-    const weaponButton = $(`<button id="weapons" style="margin-left:180px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Weapons</button>`);
+    const weaponButton = $(`<button id="weapons" style="margin-left:380px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Weapons</button>`);
     weaponButton.click(weaponShop);
-    const powerupButton = $(`<button id="weapons" style="margin-left:180px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Power Ups</button>`);
+    const powerupButton = $(`<button id="weapons" style="margin-left:380px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Power Ups</button>`);
     powerupButton.click(powerupShop)
     shopButtons.append(characterButton);
     shopButtons.append("<br>");
@@ -940,13 +940,13 @@ const openShop = () => {
     menu.append(shopButtons);
 }
 const powerupShop = () => {
-    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 80px; font-size:80px;" class="graytext">Power Ups:</h1>`);
-    const backButton = $(`<button id="back" style="margin-left:180px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 280px; font-size:80px;" class="graytext">Power Ups:</h1>`);
+    const backButton = $(`<button id="back" style="margin-left:380px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
     backButton.click(openShop);
     const shopButtons = $("<div>");
     Object.entries(powerupNames).forEach(([name, display]) => {
-        const upgradeSpawnButton = $(`<button id="back" style="margin-left:60px;" class="w3-button w3-gray w3-text-white w3-round"><span id="${name}DisplayS" style="font-size:15px;">Upgrade ${display} spawn frequency for ${localProxy.powerUpInfo[name + "SpawnUpgrade"]} for coins.</span></button>`);
-        const upgradePotencyButton = $(`<button id="back" style="margin-left:60px;" class="w3-button w3-gray w3-text-white w3-round"><span id="${name}DisplayP" style="font-size:15px;">Upgrade ${display} potency for ${localProxy.powerUpInfo[name + "PotencyUpgrade"]} for coins.</span></button>`);
+        const upgradeSpawnButton = $(`<button id="back" style="margin-left:260px;" class="w3-button w3-gray w3-text-white w3-round"><span id="${name}DisplayS" style="font-size:15px;">Upgrade ${display} spawn frequency for ${localProxy.powerUpInfo[name + "SpawnUpgrade"]} for coins.</span></button>`);
+        const upgradePotencyButton = $(`<button id="back" style="margin-left:260px;" class="w3-button w3-gray w3-text-white w3-round"><span id="${name}DisplayP" style="font-size:15px;">Upgrade ${display} potency for ${localProxy.powerUpInfo[name + "PotencyUpgrade"]} for coins.</span></button>`);
         upgradeSpawnButton.click(() => {
             const cost = localProxy.powerUpInfo[name + "SpawnUpgrade"];
             if (coins >= cost) {
@@ -987,10 +987,10 @@ const powerupShop = () => {
     menu.append(shopButtons);
 }
 const weaponShop = () => {
-    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 110px; font-size:80px;" class="graytext">Weapons:</h1>`);
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left:310px; font-size:80px;" class="graytext">Weapons:</h1>`);
     const shopButtons = $("<div>");
     Object.entries(weapons).forEach(([weaponName, weapon]) => {
-        const weaponButton = $(`<button id="weapon${weaponName}" style="margin-left:190px;" class="w3-button ${currentWeapon === weapon.weapon() ? "w3-dark-gray" : "w3-gray"}  w3-xlarge w3-text-white w3-round">${weapon.display}</button>`);
+        const weaponButton = $(`<button id="weapon${weaponName}" style="margin-left:390px;" class="w3-button ${currentWeapon === weapon.weapon() ? "w3-dark-gray" : "w3-gray"}  w3-xlarge w3-text-white w3-round">${weapon.display}</button>`);
         if (!weapon.unlocked) {
             weaponButton.html(`Buy ${weapon.display} for ${weapon.cost} coins`);
         }
@@ -1032,17 +1032,17 @@ const weaponShop = () => {
         shopButtons.append("<br>");
         shopButtons.append("<br>");
     })
-    const backButton = $(`<button id="back" style="margin-left:190px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    const backButton = $(`<button id="back" style="margin-left:390px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
     backButton.click(openShop);
     shopButtons.append(backButton);
     menu.append(shopButtons);
 }
 const characterShop = () => {
-    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 90px; font-size:80px;" class="graytext">Character:</h1>`);
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 290px; font-size:80px;" class="graytext">Character:</h1>`);
     const shopButtons = $("<div>");
-    const backButton = $(`<button id="back" style="margin-left:190px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
-    const upgradeHealth = $(`<button id="back" style="margin-left:60px;width:475px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Upgrade Your Health for ${localProxy.healthUpgradeCost} Coins</button>`);
-    const upgradeDamage = $(`<button id="back" style="margin-left:60px;width:475px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Upgrade Your Damage for ${localProxy.damageUpgradeCost} Coins</button>`);
+    const backButton = $(`<button id="back" style="margin-left:390px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    const upgradeHealth = $(`<button id="back" style="margin-left:260px;width:475px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Upgrade Your Health for ${localProxy.healthUpgradeCost} Coins</button>`);
+    const upgradeDamage = $(`<button id="back" style="margin-left:260px;width:475px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Upgrade Your Damage for ${localProxy.damageUpgradeCost} Coins</button>`);
     upgradeHealth.click(() => {
         if (coins >= localProxy.healthUpgradeCost) {
             coins -= localProxy.healthUpgradeCost;
@@ -1078,8 +1078,8 @@ const characterShop = () => {
     menu.append(shopButtons);
 }
 const achievementMenu = () => {
-    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 30px; font-size:80px;" class="graytext">Achievements:</h1>`);
-    const achievementDisplay = $(`<div style="max-height:300px;width:600px;overflow:scroll;" class="w3-text-white">`);
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 230px; font-size:80px;" class="graytext">Achievements:</h1>`);
+    const achievementDisplay = $(`<div class="noscroll" style="max-height:400px;width:600px;overflow:scroll;margin-left: 200px" class="w3-text-white">`);
     achievementList.forEach(a => {
         achievementDisplay.append(`
         <div style="padding: 4px; max-height: 100px; border: 2px solid white;" class="w3-text-white w3-gray">
@@ -1087,7 +1087,7 @@ const achievementMenu = () => {
         <p class="${localProxy.achievements.includes(a.title) ? "w3-text-white" : "graytext"}"><em>${a.desc}</em></p>
         </div>`);
     });
-    const backButton = $(`<button id="back" style="margin-left:190px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    const backButton = $(`<button id="back" style="margin-left:390px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
     backButton.click(mainMenu);
     const group = $(`<div style="text-align:left;">`);
     group.append(achievementDisplay);
@@ -1096,8 +1096,8 @@ const achievementMenu = () => {
     menu.append(group);
 };
 const hatSelect = () => {
-    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 200px; font-size:80px;" class="graytext">Hats:</h1>`);
-    const backButton = $(`<button id="back" style="margin-left:190px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 400px; font-size:80px;" class="graytext">Hats:</h1>`);
+    const backButton = $(`<button id="back" style="margin-left:390px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
     backButton.click(mainMenu);
     const group = $(`<div style="text-align:left;">`);
     const refinedHats = Object.fromEntries(Object.entries(hats).filter(([hatname, _]) => localProxy.unlockedHats.includes(hatname)));
@@ -1111,7 +1111,7 @@ const hatSelect = () => {
     back.innerHTML = "<";
     const forward = document.createElement("button");
     forward.innerHTML = ">";
-    back.style.marginLeft = "75px";
+    back.style.marginLeft = "275px";
     img.width = 300;
     img.height = 300;
     img.style.border = "5px solid white";

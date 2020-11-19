@@ -580,7 +580,7 @@ function Person({
                 weaponWidth = weapon.weaponWidth;
                 weaponHeight = weapon.weaponHeight;
                 World.remove(engine.world, [weaponBox, weaponAttachment]);
-                weaponBox = Bodies.rectangle(x, y + 5, weaponWidth, weaponHeight, {
+                weaponBox = Bodies.rectangle(this.x, this.y + 5, weaponWidth, weaponHeight, {
                     collisionFilter: {
                         mask: myMask,
                         group: Body.nextGroup(false),
@@ -670,6 +670,24 @@ function Person({
                 } else {
                     achievements.add(secondBlood);
                 }
+                emitters.push(Emitter({
+                    x: this.x,
+                    y: this.y,
+                    minSize: 3,
+                    maxSize: 9,
+                    distributionSize: 0,
+                    colors: [
+                        color
+                    ],
+                    rate: Infinity,
+                    startingParticles: 15,
+                    magnitude: 1,
+                    duration: 120,
+                    particleDuration: 120,
+                    minAngle: 0,
+                    maxAngle: 360,
+                    display: "circle"
+                }));
             }
             if (this.deadBodyParts.includes(lowerArm1) && dist(this.x, this.y, player.x, player.y) > 600 && !boss) {
                 dead = true;
@@ -700,6 +718,19 @@ function Person({
                 tempDamageBoost = max(tempDamageBoost, 1);
                 timeSinceHeal *= 0.99;
                 timeSinceHeal = max(timeSinceHeal, 1);
+                if (type) {
+                    if (this.getHealth() > 0.75) {
+                        cowardice = 0.9;
+                    } else if (this.getHealth() > 0.5) {
+                        cowardice = 0.95;
+                    } else if (this.getHealth() > 0.375) {
+                        cowardice = 0.975;
+                    } else if (this.getHealth() > 0.25) {
+                        cowardice = 0.99;
+                    } else {
+                        cowardice = 0.995;
+                    }
+                }
                 if (weaponBox.angularSpeed > 0.1 || Math.hypot(weaponBox.velocity.x, weaponBox.velocity.y) > 15) {
                     if (LASER_WEAPONS.includes(weapon)) {
                         const chosenSound = sounds["laserSwing" + floor(random(1, 4))];
@@ -834,8 +865,8 @@ function Person({
                 }
                 healthLost *= cowardice;
                 if (keyIsPressed && key === " " && this === player && !paused) {
-                    const mx = mouseX - (300 - player.head.position.x); //+ (300 - player.head.position.x);
-                    const my = mouseY - (300 - player.head.position.y); //+ (300 - player.head.position.y);
+                    const mx = mouseX - (500 - player.head.position.x); //+ (500 - player.head.position.x);
+                    const my = mouseY - (350 - player.head.position.y); //+ (350 - player.head.position.y);
                     const toMouse1 = vecTo(lowerArm1.position.x, lowerArm1.position.y, mx, my, 1);
                     const toMouse2 = vecTo(lowerArm2.position.x, lowerArm2.position.y, mx, my, 1);
                     const toMouseWeapon = vecTo(weaponBox.position.x, weaponBox.position.y, mx, my, 2);
@@ -967,8 +998,8 @@ function Person({
                     cooldown = min(1, cooldown + 1);
                 }
                 if (this === player && (weapon === harpoon || weapon === moonStaff) && !dead && mouseIsPressed && !paused && !deadBodyParts.includes(lowerArm1)) {
-                    const mx = mouseX - (300 - player.head.position.x);
-                    const my = mouseY - (300 - player.head.position.y);
+                    const mx = mouseX - (500 - player.head.position.x);
+                    const my = mouseY - (350 - player.head.position.y);
                     const angleToMousePointer = directionCalc(weaponBox.position.x, weaponBox.position.y, mx, my);
                     let mouseAngle = angleToMousePointer % (Math.PI * 2);
                     let boxAngle = (weaponBox.angle + Math.PI / 2) % (Math.PI * 2);
@@ -986,7 +1017,7 @@ function Person({
                     if (!this.deadBodyParts.includes(lowerArm1)) {
                         let c = healthLost > 10 ? -1 : 1;
                         if (type === "meleeHarpoon") {
-                            c = 1.5;
+                            c *= 1.5;
                         }
                         const toMouse1 = vecTo(lowerArm1.position.x, lowerArm1.position.y, player.head.position.x, player.head.position.y, c);
                         const toMouse2 = vecTo(lowerArm2.position.x, lowerArm2.position.y, player.head.position.x, player.head.position.y, c);
@@ -1020,6 +1051,7 @@ function Person({
 
                             }
                         } else if (type === "meleeHarpoon") {
+                            let c = healthLost > 10 ? -1 : 1;
                             const mx = player.head.position.x;
                             const my = player.head.position.y;
                             const angleToMousePointer = directionCalc(weaponBox.position.x, weaponBox.position.y, mx, my);
@@ -1035,9 +1067,9 @@ function Person({
                                 Body.setAngularVelocity(weaponBox, weaponBox.angularVelocity - 0.01);
                             }
                             if (dist(player.weapon.position.x, player.weapon.position.y, head.position.x, head.position.y) < 100) {
-                                const toMouse1 = vecTo(lowerArm1.position.x, lowerArm1.position.y, player.weapon.position.x, player.weapon.position.y, 2);
-                                const toMouse2 = vecTo(lowerArm2.position.x, lowerArm2.position.y, player.weapon.position.x, player.weapon.position.y, 2);
-                                const toMouseWeapon = vecTo(weaponBox.position.x, weaponBox.position.y, player.weapon.position.x, player.weapon.position.y, 3);
+                                const toMouse1 = vecTo(lowerArm1.position.x, lowerArm1.position.y, player.weapon.position.x, player.weapon.position.y, 2 * c);
+                                const toMouse2 = vecTo(lowerArm2.position.x, lowerArm2.position.y, player.weapon.position.x, player.weapon.position.y, 2 * c);
+                                const toMouseWeapon = vecTo(weaponBox.position.x, weaponBox.position.y, player.weapon.position.x, player.weapon.position.y, 3 * c);
                                 //setVelocity(lowerArm1, { x: lowerArm1.velocity.x + toMouse1.x, y: lowerArm1.velocity.y + toMouse1.y });
                                 //setVelocity(lowerArm2, { x: lowerArm2.velocity.x + toMouse2.x, y: lowerArm2.velocity.y + toMouse2.y });
                                 setVelocity(weaponBox, { x: weaponBox.velocity.x + toMouseWeapon.x, y: weaponBox.velocity.y + toMouseWeapon.y });
@@ -1069,24 +1101,12 @@ function Person({
                             }
                         }
                     }
-                    enemies.forEach(enemy => {
-                        if (dist(this.x, this.y, enemy.x, enemy.y) < 200 && !dead) {
-                            const away = vecTo(this.x, this.y + 0.0001, enemy.x, enemy.y, -2);
-                            setVelocity(torso, { x: torso.velocity.x + away.x, y: torso.velocity.y + away.y });
-                            const angle = enemy.torso.angle;
-                            if (angle < torso.angle) {
-                                Body.setAngularVelocity(torso, torso.angularVelocity + 0.1)
-                            } else {
-                                Body.setAngularVelocity(torso, torso.angularVelocity - 0.1)
-                            }
-                        }
-                    })
                 }
                 if (typeof type === "string" && type.startsWith("ranged") && !player.deadBodyParts.includes(player.head) && !paused) {
                     if (!this.deadBodyParts.includes(lowerArm1)) {
                         const distToPlayer = dist(this.x, this.y, player.x, player.y);
                         let c = 0;
-                        if (distToPlayer < 150) {
+                        if (distToPlayer < 150 || healthLost > 10) {
                             c = -2;
                         }
                         if (distToPlayer > 300) {
@@ -1100,7 +1120,7 @@ function Person({
                         };
                         const magnitude = Math.hypot(weaponVec.x * 25, weaponVec.y * 25);
                         const dtp = dist(weaponBox.position.x, weaponBox.position.y, player.head.position.x, player.head.position.y);
-                        const toMouseWeapon = vecTo(weaponBox.position.x, weaponBox.position.y, player.head.position.x + (weapon === railgun ? 0 : player.head.velocity.x * dtp / magnitude), player.head.position.y + (weapon === railgun ? 0 : player.head.velocity.y * dtp / magnitude), 1);
+                        const toMouseWeapon = vecTo(weaponBox.position.x, weaponBox.position.y, player.head.position.x + (weapon === railgun ? 0 : player.head.velocity.x * dtp / magnitude), player.head.position.y + (weapon === railgun ? 0 : player.head.velocity.y * dtp / magnitude), healthLost > 10 ? -1 : 1);
                         if (Math.random() < (weapon === railgun ? 1 : 0.02) && distToPlayer < (weapon === plasrifle ? Infinity : 600)) {
                             const weaponVec = {
                                 x: Math.cos(weaponBox.angle + Math.PI / 2),
@@ -1188,18 +1208,130 @@ function Person({
                             }
                         }
                     }
+                }
+                if (type) {
                     enemies.forEach(enemy => {
-                        if (dist(this.x, this.y, enemy.x, enemy.y) < 200 && !dead) {
-                            const away = vecTo(this.x, this.y + 0.0001, enemy.x, enemy.y, -2);
-                            setVelocity(torso, { x: torso.velocity.x + away.x, y: torso.velocity.y + away.y });
+                        if (dist(this.x, this.y, enemy.x, enemy.y) < 200 && !dead && !enemy.dead && !(enemy === this)) {
+                            const away = vecTo(this.x, this.y + 0.0001, enemy.x, enemy.y, -2 * ((200 - dist(this.x, this.y, enemy.x, enemy.y)) / 200));
+                            setVelocity(lowerArm1, { x: lowerArm1.velocity.x + away.x, y: lowerArm1.velocity.y + away.y });
+                            setVelocity(lowerArm2, { x: lowerArm2.velocity.x + away.x, y: lowerArm2.velocity.y + away.y });
+                            setVelocity(weaponBox, { x: weaponBox.velocity.x + away.x, y: weaponBox.velocity.y + away.y });
+                            //setVelocity(torso, { x: torso.velocity.x + away.x, y: torso.velocity.y + away.y });
                             const angle = enemy.torso.angle;
                             if (angle < torso.angle) {
-                                Body.setAngularVelocity(torso, torso.angularVelocity + 0.01)
+                                Body.setAngularVelocity(torso, torso.angularVelocity + 0.1)
                             } else {
-                                Body.setAngularVelocity(torso, torso.angularVelocity - 0.01)
+                                Body.setAngularVelocity(torso, torso.angularVelocity - 0.1)
                             }
                         }
-                    })
+                        const totemPole = [lazdagger, pistol, lance, axe, railgun, plasrifle, harpoon];
+                        const aiTypes = ["melee", "ranged", "meleeRanged", "meleeHeavy", "rangedRapid", "meleeHarpoon"];
+                        if (dist(this.x, this.y, enemy.weapon.position.x, enemy.weapon.position.y) < 400 && enemy.deadBodyParts.includes(enemy.weapon) && !(enemy === this) && !enemy.weapon.hide && !deadBodyParts.includes(lowerArm1) && !boss && !dead) {
+                            if (totemPole.indexOf(enemy.weapon.weaponImage) > totemPole.indexOf(weapon)) {
+                                if (dist(lowerArm1.position.x, lowerArm1.position.y, enemy.weapon.position.x, enemy.weapon.position.y) < 50) {
+                                    type = aiTypes[totemPole.indexOf(enemy.weapon.weaponImage)];
+                                    World.remove(engine.world, [enemy.weapon, enemy.weaponAttachment]);
+                                    enemy.weapon.hide = true;
+                                    weapon = enemy.weapon.weaponImage;
+                                    weaponWidth = weapon.weaponWidth;
+                                    weaponHeight = weapon.weaponHeight;
+                                    World.remove(engine.world, [weaponBox, weaponAttachment]);
+                                    weaponBox = Bodies.rectangle(this.x, this.y + 5, weaponWidth, weaponHeight, {
+                                        collisionFilter: {
+                                            mask: myMask,
+                                            group: Body.nextGroup(false),
+                                            category: myCategory
+                                        },
+                                        frictionAir: 0.1,
+                                        density: (() => {
+                                            switch (weapon) {
+                                                /*case axe:
+                                                    return 0.005;
+                                                case sword:
+                                                    return 0.0025;
+                                                case dagger:
+                                                    return 0.001;*/
+                                                case plasrifle:
+                                                case harpoon:
+                                                    return 0.0015;
+                                                case pistol:
+                                                    return 0.0005;
+                                                case lazord:
+                                                    return 0.001;
+                                                case lance:
+                                                    return 0.001;
+                                                case lazdagger:
+                                                    return 0.0005;
+                                                case railgun:
+                                                    return 0.001;
+                                                case axe:
+                                                case spoon:
+                                                    return 0.0025;
+                                                case moonStaff:
+                                                    return 0.0015;
+                                                case undefined:
+                                                    return 0.0000001;
+                                            }
+                                        })()
+                                    });
+                                    weaponAttachment = Constraint.create({
+                                        bodyA: lowerArm1,
+                                        bodyB: weaponBox,
+                                        length: 0,
+                                        pointA: {
+                                            x: distanceFromCenter,
+                                            y: 10
+                                        },
+                                        pointB: {
+                                            x: 0,
+                                            y: -weaponHeight / 2
+                                        },
+                                        damping: 0.1,
+                                        stiffness: weapon === harpoon ? 0.05 : 1,
+                                        frictionAir: 0.1,
+                                        /*angleAStiffness: s,
+                                        angleAMin: -Math.PI / u,
+                                        angleAMax: Math.PI / u,*/
+                                        /*angleBMin: -Math.PI / u,
+                                        angleBMax: Math.PI / u,
+                                        angleBStiffness: s,
+                                        damping: 0.1*/
+                                    });
+                                    World.add(engine.world, [weaponBox, weaponAttachment]);
+                                } else {
+                                    const toMouse1 = vecTo(lowerArm1.position.x, lowerArm1.position.y, enemy.weapon.position.x, enemy.weapon.position.y, 4);
+                                    const toMouse2 = vecTo(lowerArm2.position.x, lowerArm2.position.y, enemy.weapon.position.x, enemy.weapon.position.y, 4);
+                                    const toMouseWeapon = vecTo(weaponBox.position.x, weaponBox.position.y, enemy.weapon.position.x, enemy.weapon.position.y, 4);
+                                    setVelocity(lowerArm1, { x: lowerArm1.velocity.x + toMouse1.x, y: lowerArm1.velocity.y + toMouse1.y });
+                                    setVelocity(lowerArm2, { x: lowerArm2.velocity.x + toMouse2.x, y: lowerArm2.velocity.y + toMouse2.y });
+                                    setVelocity(weaponBox, { x: weaponBox.velocity.x + toMouseWeapon.x, y: weaponBox.velocity.y + toMouseWeapon.y });
+                                }
+                            }
+                        }
+                    });
+                    let borderAvoidStrength = 2.5;
+                    if (this.x > 1800) {
+                        const scale = (100 - (1900 - this.x)) / 100;
+                        setVelocity(lowerArm1, { x: lowerArm1.velocity.x - borderAvoidStrength * scale, y: lowerArm1.velocity.y });
+                        setVelocity(lowerArm2, { x: lowerArm2.velocity.x - borderAvoidStrength * scale, y: lowerArm2.velocity.y });
+                        setVelocity(weaponBox, { x: weaponBox.velocity.x - borderAvoidStrength * scale, y: weaponBox.velocity.y });
+                    } else if (this.x < -1800) {
+                        const scale = (100 + (-1900 - this.x)) / 100;
+                        setVelocity(lowerArm1, { x: lowerArm1.velocity.x + borderAvoidStrength * scale, y: lowerArm1.velocity.y });
+                        setVelocity(lowerArm2, { x: lowerArm2.velocity.x + borderAvoidStrength * scale, y: lowerArm2.velocity.y });
+                        setVelocity(weaponBox, { x: weaponBox.velocity.x + borderAvoidStrength * scale, y: weaponBox.velocity.y });
+                    }
+                    if (this.y > 1800) {
+                        const scale = (100 - (1900 - this.y)) / 100;
+                        setVelocity(lowerArm1, { x: lowerArm1.velocity.x, y: lowerArm1.velocity.y - borderAvoidStrength * scale });
+                        setVelocity(lowerArm2, { x: lowerArm2.velocity.x, y: lowerArm2.velocity.y - borderAvoidStrength * scale });
+                        setVelocity(weaponBox, { x: weaponBox.velocity.x, y: weaponBox.velocity.y - borderAvoidStrength * scale });
+                    } else if (this.y < -1800) {
+                        const scale = (100 + (-1900 - this.y)) / 100;
+                        setVelocity(lowerArm1, { x: lowerArm1.velocity.x, y: lowerArm1.velocity.y + borderAvoidStrength * scale });
+                        setVelocity(lowerArm2, { x: lowerArm2.velocity.x, y: lowerArm2.velocity.y + borderAvoidStrength * scale });
+                        setVelocity(weaponBox, { x: weaponBox.velocity.x, y: weaponBox.velocity.y + borderAvoidStrength * scale });
+                    }
                 }
                 if (boss && !paused) {
                     ticksSinceHellfire++;
@@ -1458,7 +1590,7 @@ function Person({
                 stroke(0);
                 /*fill(255, 0, 0);
                 drawVertices(weaponBox.vertices);*/
-                if (weapon) {
+                if (weapon && !weaponBox.hide) {
                     push();
                     translate(weaponBox.position.x, weaponBox.position.y);
                     rotate(Math.PI / 2 + weaponBox.angle);
@@ -1490,7 +1622,7 @@ function Person({
                 if (hat) {
                     push();
                     translate(head.position.x, head.position.y);
-                    rotate((![hats.swordHat, hats.disguise, hats.tophat, hats.tinfoilhat, hats.sweat].includes(hat)) && !this.deadBodyParts.includes(head) ? torso.angle : head.angle);
+                    rotate((![hats.swordHat, hats.disguise, hats.tophat, hats.tinfoilhat, hats.sweat, hats.table, hats.four, hats.lunarRover, hats.temple].includes(hat)) && !this.deadBodyParts.includes(head) ? torso.angle : head.angle);
                     //tint(255, deadTimer);
                     image(hat, hat.xOffset, hat.yOffset, hat.customWidth ? hat.customWidth : 60, hat.customHeight ? hat.customHeight : 60);
                     //noTint();
@@ -1536,6 +1668,9 @@ function Person({
             }
             weaponBox.weaponImage = weapon;
             return weaponBox;
+        },
+        get weaponAttachment() {
+            return weaponAttachment;
         },
         jump() {
             setVelocity(torso, { x: torso.velocity.x, y: torso.velocity.y - 10 });
@@ -1658,12 +1793,12 @@ function Person({
                         const multiplier = (this.opponent.weapon.isHarpoon ? 1 : 5);
                         const boost = this.opponent.tempDamageBoost ? this.opponent.tempDamageBoost : 1;
                         body.health -= this.opponent.weapon.angularSpeed * multiplier * this.opponent.strength * damageMultiplier * boost;
-                        healthLost += this.opponent.weapon.angularSpeed * multiplier * this.opponent.strength * damageMultiplier * boost;
+                        healthLost += this.opponent.weapon.angularSpeed * multiplier * this.opponent.strength * damageMultiplier * boost * (1 / strength);
                     } else {
                         const velocity = Math.hypot(body.velocity.x, body.velocity.y);
                         const debuff = opponent.asteroid ? 0.1275 : 1;
                         body.health -= velocity * 0.5 * debuff * this.opponent.strength;
-                        healthLost -= velocity * 0.5 * debuff * this.opponent.strength;
+                        healthLost += velocity * 0.5 * debuff * this.opponent.strength * (1 / strength);
                     }
                     if (body.health < 0) {
                         if (!((boss || (!type && levelNum === 9)) && (body === lowerArm1 || body == upperArm1))) {

@@ -1,6 +1,6 @@
 function displayAchievement({ title, desc, opacity, index }) {
-    const xOffset = gameState === "play" ? (player.head.position.x - 300) : (gameState === "play" ? 0 : -25);
-    const yOffset = gameState === "play" ? (player.head.position.y - 300) : (gameState === "play" ? 0 : 500);
+    const xOffset = gameState === "play" ? (player.head.position.x - 500) : (gameState === "play" ? 0 : 175);
+    const yOffset = gameState === "play" ? (player.head.position.y - 350) : (gameState === "play" ? 0 : 550);
     fill(150, 150, 150, opacity * 255);
     rect(xOffset + 212.5 - (index % 3) * 200, yOffset + 0 + floor(index / 3) * 100, 201, 100);
     fill(255, 255, 255, opacity * 255);
@@ -12,8 +12,8 @@ function displayAchievement({ title, desc, opacity, index }) {
 }
 
 function displayHatUnlock({ hat, opacity, index }) {
-    const xOffset = gameState === "play" ? (player.head.position.x - 300) : 0;
-    const yOffset = gameState === "play" ? (player.head.position.y - 300) : 0;
+    const xOffset = gameState === "play" ? (player.head.position.x - 500) : 200;
+    const yOffset = gameState === "play" ? (player.head.position.y - 350) : 50;
     fill(150, 150, 150, opacity * 255);
     rect(xOffset + 400 - (index % 3) * 200, yOffset + 500 - floor(index / 3) * 100, 201, 100);
     fill(255, 255, 255, opacity * 255);

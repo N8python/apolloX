@@ -18,3 +18,12 @@ label {
 #menu::-webkit-scrollbar {
     display: none;
 }
+
+.noscroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.noscroll::-webkit-scrollbar {
+    display: none;
+}
