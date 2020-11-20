@@ -1,9 +1,11 @@
+p5.disableFriendlyErrors = true;
 let starSeed;
 let engine;
 const { Engine, Composite, Render, World, Bodies, Body, Detector, Constraint, Sleeping } = Matter;
 const hats = {};
 const sounds = {};
 const powerups = {};
+const moonTiles = [];
 let player;
 let enemies = [];
 let bullets = [];
@@ -181,7 +183,6 @@ function preload() {
     moonStaff.weaponWidth = 85;
     moonStaff.weaponHeight = 150;
     starImage = loadImage("assets/stars.png");
-    moon = loadImage("assets/moon.png");
     asteroidImage = loadImage("assets/asteroid.png");
     hats.spaceHelmet = loadImage("assets/spacehat.png");
     hats.spaceHelmet.xOffset = -25;
@@ -363,6 +364,13 @@ function preload() {
     hats.sweat.customWidth = 25;
     hats.sweat.customHeight = 25;
     hats.sweat.sourceFile = "assets/hats/sweat.png";
+    for (let i = 0; i < 64; i++) {
+        let display = i;
+        if (i < 10) {
+            display = "0" + i;
+        }
+        moonTiles.push(loadImage(`assets/moon/tile0${display}.png`));
+    }
     powerups.heart = loadImage("assets/heart.png");
     powerups.heart.xOffset = 0;
     powerups.heart.yOffset = 2.5;
@@ -634,15 +642,25 @@ function draw() {
         fill(0);
         rect(-1200, -1200, 2400, 2400);
         //stars(starSeed);
+        let moonSize = max(2500 * (levelNum / 10) ** 4, 1);
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 4; j++) {
-                image(starImage, -1200 + i * 600, -1200 + j * 600, 600, 600);
+                if (dist(player.x, player.y, -1200 + i * 600, -1200 + j * 600) < 1250) {
+                    image(starImage, -1200 + i * 600, -1200 + j * 600, 600, 600);
+                }
             }
         }
-        imageMode(CENTER);
-        let moonSize = max(2500 * (levelNum / 10) ** 4, 1);
-        image(moon, 0, 0, moonSize, moonSize);
+        //image(moon, 0, 0, moonSize, moonSize);
         imageMode(CORNER);
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                if (dist(player.x, player.y, -moonSize / 2 + j * (moonSize / 8), -moonSize / 2 + i * (moonSize / 8)) < 1250) {
+                    const idx = [i * 8 + j];
+                    const tile = moonTiles[idx];
+                    image(tile, -moonSize / 2 + j * (moonSize / 8), -moonSize / 2 + i * (moonSize / 8), moonSize / 8, moonSize / 8);
+                }
+            }
+        }
         strokeWeight(3);
         stroke(120);
         fill(60);
@@ -843,9 +861,9 @@ const settingsMenu = () => {
         paused = false;
         menu.html(``);
     });
-    const musicVolume = $(`<input style="position:relative;top:4px;margin-left:204px;" type="range" min="0" max="100" value="100">`);
+    const musicVolume = $(`<input style="position:relative;top:4px;margin-left:4px;" type="range" min="0" max="100" value="100">`);
     musicVolume.css("margin-top", "180px");
-    const soundEffectsVolume = $(`<input style="position:relative;top:4px;margin-left:218px;" type="range" min="0" max="100" value="100">`);
+    const soundEffectsVolume = $(`<input style="position:relative;top:4px;margin-left:18px;" type="range" min="0" max="100" value="100">`);
     musicVolume.val(Math.round(localProxy.musicVolume * 100));
     soundEffectsVolume.val(Math.round(localProxy.sfxVolume * 100));
     musicVolume.on("input", () => {

@@ -730,6 +730,9 @@ function Person({
                     } else {
                         cowardice = 0.995;
                     }
+                    if (boss) {
+                        cowardice = 0;
+                    }
                 }
                 if (weaponBox.angularSpeed > 0.1 || Math.hypot(weaponBox.velocity.x, weaponBox.velocity.y) > 15) {
                     if (LASER_WEAPONS.includes(weapon)) {
