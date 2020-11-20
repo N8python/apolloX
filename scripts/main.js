@@ -651,7 +651,7 @@ function draw() {
         let moonSize = max(2500 * (levelNum / 10) ** 4, 1);
         for (let i = 0; i < 4; i++) {
             for (let j = 0; j < 4; j++) {
-                if (dist(player.x, player.y, -1200 + i * 600, -1200 + j * 600) < 1250) {
+                if (dist(player.x, player.y, -1200 + i * 600, -1200 + j * 600) < 1250 || player.dead) {
                     image(starImage, -1200 + i * 600, -1200 + j * 600, 600, 600);
                 }
             }
@@ -660,7 +660,7 @@ function draw() {
         imageMode(CORNER);
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
-                if (dist(player.x, player.y, -moonSize / 2 + j * (moonSize / 8), -moonSize / 2 + i * (moonSize / 8)) < 1250) {
+                if (dist(player.x, player.y, -moonSize / 2 + j * (moonSize / 8), -moonSize / 2 + i * (moonSize / 8)) < 1250 || player.dead) {
                     const idx = [i * 8 + j];
                     const tile = moonTiles[idx];
                     image(tile, -moonSize / 2 + j * (moonSize / 8), -moonSize / 2 + i * (moonSize / 8), moonSize / 8, moonSize / 8);
@@ -731,6 +731,9 @@ function draw() {
                 enemy.die();
             }
         });
+        if (localProxy.particles === "Off") {
+            emitters = [];
+        }
         emitters.forEach(emitter => {
             emitter.draw();
         });
@@ -799,7 +802,7 @@ const mainMenu = () => {
         <button id="instructions" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Instructions</button>
         <br>
         <br>
-        <button id="graphics" style="margin-left:385px;width:200px;font-size:20px !important;" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Graphics: Good</button>
+        <button id="settingsMain" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Settings</button>
     `);
 }
 const levelSelectMenu = () => {
@@ -1176,10 +1179,74 @@ const hatSelect = () => {
 
     menu.append(group);
 }
+if (!localProxy.particles) {
+    localProxy.particles = "On";
+}
+const settingsMain = () => {
+    menu.html(`<h1 class="w3-text-white" style="text-align: left; margin-left: 320px; font-size:80px;" class="graytext">Settings:</h1>
+    <br>
+    <button id="graphics" style="margin-left:385px;width:200px;font-size:20px !important;" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Graphics: Good</button>
+    `);
+    const backButton = $(`<button id="back" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Back</button>`);
+    backButton.click(mainMenu);
+    const particleButton = $(`<button id="particles" style="margin-left:385px;width:200px;font-size:20px !important;" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Particles: ${localProxy.particles}</button>`);
+    const resetButton = $(`<button id="reset" style="margin-left:385px;width:200px;" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Reset</button>`);
+    particleButton.click(() => {
+        if (localProxy.particles === "On") {
+            localProxy.particles = "Off";
+        } else if (localProxy.particles === "Off") {
+            localProxy.particles = "On";
+        }
+        particleButton.html(`Particles: ${localProxy.particles}`)
+    });
+    resetButton.click(() => {
+        Swal.fire({
+            title: 'Are you sure you want to reset?',
+            input: "You will lose all your progress.",
+            showDenyButton: true,
+            confirmButtonText: `Yes`,
+            denyButtonText: `No`,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire('Your progress was reset!', '', 'error');
+                reset();
+            } else if (result.isDenied) {
+                Swal.fire('Your progress has not been reset.', '', 'success')
+            }
+        })
+    });
+    const musicVolume = $(`<input style="position:relative;top:4px;margin-left:4px;" type="range" min="0" max="100" value="100">`);
+    const soundEffectsVolume = $(`<input style="position:relative;top:4px;margin-left:18px;" type="range" min="0" max="100" value="100">`);
+    musicVolume.val(Math.round(localProxy.musicVolume * 100));
+    soundEffectsVolume.val(Math.round(localProxy.sfxVolume * 100));
+    musicVolume.on("input", () => {
+        localProxy.musicVolume = musicVolume.val() / 100;
+    });
+    soundEffectsVolume.on("input", () => {
+        localProxy.sfxVolume = soundEffectsVolume.val() / 100;
+    });
+    menu.append($("<br>"));
+    menu.append($("<br>"));
+    menu.append(particleButton);
+    menu.append($("<br>"));
+    menu.append($("<br>"));
+    menu.append($(`<label style="margin-left: 385px;" class="w3-text-white">Music Volume:</label>`))
+    menu.append(musicVolume);
+    menu.append($("<br>"));
+    menu.append($(`<label style="margin-left: 385px" class="w3-text-white">SFX Volume:</label>`))
+    menu.append(soundEffectsVolume);
+    menu.append($("<br>"));
+    menu.append($("<br>"));
+    menu.append(resetButton);
+    menu.append($("<br>"));
+    menu.append($("<br>"));
+    menu.append(backButton);
+}
 $(document).on("click", "#selectLevel", levelSelectMenu);
 $(document).on("click", "#shop", openShop);
 $(document).on("click", "#achievements", achievementMenu);
 $(document).on("click", "#hats", hatSelect);
+$(document).on("click", '#settingsMain', settingsMain);
 $(document).on("click", "#instructions", () => {
     achievements.add(bigBrain);
     $("#instructionModal").css("display", "block");
