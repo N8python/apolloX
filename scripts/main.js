@@ -462,6 +462,11 @@ function setup() {
     }))*/
     player.add();
     Engine.run(engine);
+    if (localProxy.graphics === "Good") {
+        pixelDensity(2);
+    } else if (localProxy.graphics === "Fast") {
+        pixelDensity(1);
+    }
 }
 
 function clearGameState() {
@@ -504,6 +509,7 @@ function draw() {
     coins = min(coins, 99999);
     coins = round(coins);
     localProxy.unlockedHats = Array.from(new Set(localProxy.unlockedHats));
+    $("#graphics").html(`Graphics: ${localProxy.graphics}`)
     if (coins >= 999) {
         achievements.add(jeffBezos);
     }
@@ -791,6 +797,9 @@ const mainMenu = () => {
         <br>
         <br>
         <button id="instructions" style="margin-left:385px;width:200px" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Instructions</button>
+        <br>
+        <br>
+        <button id="graphics" style="margin-left:385px;width:200px;font-size:20px !important;" class="w3-button w3-gray w3-xlarge w3-text-white w3-round">Graphics: Good</button>
     `);
 }
 const levelSelectMenu = () => {
@@ -1174,4 +1183,17 @@ $(document).on("click", "#hats", hatSelect);
 $(document).on("click", "#instructions", () => {
     achievements.add(bigBrain);
     $("#instructionModal").css("display", "block");
+})
+if (!localProxy.graphics) {
+    localProxy.graphics = "Good";
+}
+$(document).on("click", "#graphics", () => {
+    if (localProxy.graphics === "Good") {
+        pixelDensity(1);
+        localProxy.graphics = "Fast";
+    } else if (localProxy.graphics === "Fast") {
+        pixelDensity(2);
+        localProxy.graphics = "Good";
+    }
+    $("#graphics").html(`Graphics: ${localProxy.graphics}`)
 })
