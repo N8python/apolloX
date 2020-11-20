@@ -39,8 +39,15 @@ function Person({
     strength = 1,
     coinAmount = 1,
     coinValue = 1,
-    boss = false
+    boss = false,
+    backgroundPerson = false
 }) {
+    let target;
+    let targetTick;
+    if (backgroundPerson) {
+        targetTick = 0;
+        target = { x: random(0, 1000), y: random(700) }
+    }
     const LASER_WEAPONS = [lazord, lazdagger, lance, axe, plasrifle, harpoon, moonStaff];
     hat = hats[hat];
     let weaponWidth = weapon.weaponWidth;
@@ -730,7 +737,7 @@ function Person({
                     } else {
                         cowardice = 0.995;
                     }
-                    if (boss) {
+                    if (boss || enemies.filter(enemy => !enemy.dead).length < 2) {
                         cowardice = 0;
                     }
                 }
@@ -1227,10 +1234,10 @@ function Person({
                                 Body.setAngularVelocity(torso, torso.angularVelocity - 0.1)
                             }
                         }
-                        const totemPole = [lazdagger, pistol, lance, axe, railgun, plasrifle, harpoon];
-                        const aiTypes = ["melee", "ranged", "meleeRanged", "meleeHeavy", "rangedRapid", "meleeHarpoon"];
-                        if (dist(this.x, this.y, enemy.weapon.position.x, enemy.weapon.position.y) < 400 && enemy.deadBodyParts.includes(enemy.weapon) && !(enemy === this) && !enemy.weapon.hide && !deadBodyParts.includes(lowerArm1) && !boss && !dead) {
-                            if (totemPole.indexOf(enemy.weapon.weaponImage) > totemPole.indexOf(weapon)) {
+                        const totemPole = [lazdagger, pistol, lance, axe, railgun, plasrifle];
+                        const aiTypes = ["melee", "ranged", "meleeRanged", "meleeHeavy", "rangedRapid"];
+                        if (dist(this.x, this.y, enemy.weapon.position.x, enemy.weapon.position.y) < 400 && enemy.deadBodyParts.includes(enemy.weapon) && !(enemy === this) && !enemy.weapon.hide && !deadBodyParts.includes(lowerArm1) && !boss && !dead && enemy.weapon.weaponImage !== harpoon) {
+                            if (totemPole.indexOf(enemy.weapon.weaponImage) > totemPole.indexOf(weapon) && totemPole.indexOf(enemy.weapon.weaponImage) > -1 && totemPole.indexOf(weapon) > -1) {
                                 if (dist(lowerArm1.position.x, lowerArm1.position.y, enemy.weapon.position.x, enemy.weapon.position.y) < 50) {
                                     type = aiTypes[totemPole.indexOf(enemy.weapon.weaponImage)];
                                     World.remove(engine.world, [enemy.weapon, enemy.weaponAttachment]);
@@ -1555,6 +1562,34 @@ function Person({
                         this.asteroidStorm();
                     }*/
                 }
+                if (backgroundPerson && target) {
+                    targetTick++;
+                    /*if (target.type === "wave") {
+                        //const toMouse1 = vecTo(upperArm2.position.x, upperArm2.position.y, head.position.x + 50, head.position.y + (45 * Math.sin(targetTick / 10)), 3);
+                        //const toMouse2 = vecTo(lowerArm2.position.x, lowerArm2.position.y, head.position.x + 50, head.position.y + (45 * Math.sin(targetTick / 10)), 2);
+                        //setVelocity(upperArm2, { x: upperArm2.velocity.x + toMouse1.x, y: upperArm2.velocity.y + toMouse1.y });
+                        //setVelocity(lowerArm2, { x: lowerArm2.velocity.x + toMouse2.x, y: lowerArm2.velocity.y + toMouse2.y });
+                        Body.setAngularVelocity(upperArm2, upperArm2.angularVelocity + Math.sin(targetTick / 10) * 0.05);
+                        Body.setAngularVelocity(lowerArm2, lowerArm2.angularVelocity + Math.sin(targetTick / 10) * 0.05);
+                        Body.setAngularVelocity(upperArm1, -upperArm1.angle / 1000);
+                        Body.setAngularVelocity(lowerArm1, -lowerArm1.angle / 1000);
+                        Body.setAngularVelocity(weaponBox, -weaponBox.angle / 1000);
+                    } else {*/
+                    const toMouse1 = vecTo(lowerArm1.position.x, lowerArm1.position.y, target.x, target.y, 1);
+                    const toMouse2 = vecTo(lowerArm2.position.x, lowerArm2.position.y, target.x, target.y, 1);
+                    const toMouseWeapon = vecTo(weaponBox.position.x, weaponBox.position.y, target.x, target.y, 2);
+                    setVelocity(lowerArm1, { x: lowerArm1.velocity.x + toMouse1.x, y: lowerArm1.velocity.y + toMouse1.y });
+                    setVelocity(lowerArm2, { x: lowerArm2.velocity.x + toMouse2.x, y: lowerArm2.velocity.y + toMouse2.y });
+                    setVelocity(weaponBox, { x: weaponBox.velocity.x + toMouseWeapon.x, y: weaponBox.velocity.y + toMouseWeapon.y });
+                    if (dist(weaponBox.position.x, weaponBox.position.y, target.x, target.y) < 30) {
+                        //if (Math.random() < 0) {
+                        target = { x: random(1000), y: random(700) };
+                        /*} else {
+                            target = { type: 'wave' };
+                        }*/
+                    }
+                    //}
+                }
                 //Body.setAngularVelocity(lowerLeg2, -0.1)
                 if (!deadBodyParts.includes(torso)) {
                     Body.setAngularVelocity(torso, -torso.angle / 10);
@@ -1718,7 +1753,7 @@ function Person({
             return strength;
         },
         get isPlayer() {
-            return !type;
+            return !type && !backgroundPerson;
         },
         get dead() {
             return dead;

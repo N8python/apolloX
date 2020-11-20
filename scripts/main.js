@@ -9,6 +9,7 @@ const moonTiles = [];
 let player;
 let enemies = [];
 let bullets = [];
+let backgroundPeople = [];
 let powerupList = [];
 let emitters = [];
 let lazord;
@@ -101,6 +102,9 @@ if (localProxy.unlockedHats === undefined) {
             localProxy.unlockedHats = localProxy.unlockedHats.concat(hatsUnlocked);
         }
     })
+}
+if (localProxy.unlockedHats.length === 0) {
+    localProxy.unlockedHats = ["spaceHelmet"];
 }
 if (localProxy.hat === undefined) {
     localProxy.hat = "spaceHelmet";
@@ -414,7 +418,38 @@ function setup() {
         hat: currHat,
         strength: 2
     });
-    //powerupList.push(heartPowerup(60, 60), damagePowerup(0, 0));
+    for (let i = 0; i < 4; i++) {
+        const randomWeapon = [lazord, lazdagger, lance, plasrifle][i];
+        let color;
+        switch (randomWeapon) {
+            case lazord:
+                color = [0, 255, 255];
+                break;
+            case lazdagger:
+                color = [255, 0, 0];
+                break;
+            case lance:
+                color = [0, 255, 0];
+                break;
+            case plasrifle:
+                color = [125, 0, 255];
+                break;
+        }
+        backgroundPeople.push(Person({
+            x: random(0, 1000),
+            y: random(0, 700),
+            category: 2,
+            color,
+            weapon: randomWeapon,
+            hat: "spaceHelmet",
+            backgroundPerson: true,
+            strength: 2
+        }));
+    }
+    backgroundPeople.forEach(person => {
+            person.add();
+        })
+        //powerupList.push(heartPowerup(60, 60), damagePowerup(0, 0));
     moonX = player.head.position.x;
     moonY = player.head.position.y;
     enemies = [
@@ -486,6 +521,38 @@ function clearGameState() {
     bullets = [];
     coinList = [];
     powerupList = [];
+    /*backgroundPeople = [];
+    for (let i = 0; i < 5; i++) {
+        const randomWeapon = [lazord, lazdagger, lance, plasrifle][floor(random(4))];
+        let color;
+        switch (randomWeapon) {
+            case lazord:
+                color = [0, 255, 255];
+                break;
+            case lazdagger:
+                color = [255, 0, 0];
+                break;
+            case lance:
+                color = [0, 255, 0];
+                break;
+            case plasrifle:
+                color = [125, 0, 255];
+                break;
+        }
+        backgroundPeople.push(Person({
+            x: random(0, 1000),
+            y: random(0, 700),
+            category: 2,
+            color,
+            weapon: randomWeapon,
+            hat: "spaceHelmet",
+            backgroundPerson: true,
+            strength: 2
+        }));
+    }*/
+    backgroundPeople.forEach(person => {
+        person.add();
+    })
     emitters = [];
     player.add();
     tick = 0;
@@ -525,6 +592,8 @@ function draw() {
     localStorage.coins = coins;
     localStorage.maxLevelUnlocked = maxLevelUnlocked;
     background(0);
+    image(starImage, 0, 0, 700, 700);
+    image(starImage, 700, 0, 700, 700);
     image(coin, 450 + 80 - 11 * (coins.toString().length - 1) + 400, 10, 30, 30);
     fill(255);
     textAlign(CENTER);
@@ -619,10 +688,10 @@ function draw() {
                 }
             }
         }
-        if (Math.random() < localProxy.powerUpInfo.healthSpawnRate && !player.dead && !paused) {
+        if (Math.random() < localProxy.powerUpInfo.healthSpawnRate && !player.dead && !paused && winState === undefined) {
             powerupList.push(healthPowerup(player.head.position.x + random(100, 200) * (random() < 0.5 ? 1 : -1), player.head.position.y + random(100, 200) * (random() < 0.5 ? 1 : -1)));
         }
-        if (Math.random() < localProxy.powerUpInfo.strengthSpawnRate && !player.dead && !paused) {
+        if (Math.random() < localProxy.powerUpInfo.strengthSpawnRate && !player.dead && !paused && winState === undefined) {
             powerupList.push(damagePowerup(player.head.position.x + random(100, 200) * (random() < 0.5 ? 1 : -1), player.head.position.y + random(100, 200) * (random() < 0.5 ? 1 : -1)));
         }
         translate(500 - player.head.position.x, 350 - player.head.position.y);
@@ -671,7 +740,7 @@ function draw() {
         stroke(120);
         fill(60);
         rect(player.head.position.x - 298 - 200, player.head.position.y - 298 - 50, 100, 10);
-        fill(255)
+        fill(0, 255, 0)
         noStroke();
         rect(player.head.position.x - 297 - 200, player.head.position.y - 296.5 - 50, 98 * player.getHealth(), 7);
         if (player.holdingRangedWeapon()) {
@@ -707,7 +776,7 @@ function draw() {
             stroke(120);
             fill(60);
             rect(player.head.position.x - 298 + 100 - 200, player.head.position.y - 298 - 50, 100, 10);
-            fill(0, 255, 0)
+            fill(255, 255, 255);
             noStroke();
             rect(player.head.position.x - 297 + 100 - 200, player.head.position.y - 296.5 - 50, 98 * progression, 7);
         }
@@ -771,6 +840,9 @@ function draw() {
         sounds.track1.pause()
         settings.css("display", "none");
         achievements.render();
+        backgroundPeople.forEach(person => {
+            person.draw();
+        })
     }
     if (paused) {
         engine.world.bodies.forEach(body => Sleeping.set(body, true));
@@ -852,7 +924,7 @@ const levelSelectMenu = () => {
     menu.append(startButton);
     menu.append("<br>");
     menu.append("<br>");
-    if (maxLevelUnlocked === 10) {
+    if (maxLevelUnlocked >= 10) {
         menu.append(endlessButton);
         menu.append("<br>");
         menu.append("<br>");
@@ -1263,4 +1335,22 @@ $(document).on("click", "#graphics", () => {
         localProxy.graphics = "Good";
     }
     $("#graphics").html(`Graphics: ${localProxy.graphics}`)
+});
+//$("#instructionModal").css("display", "none");
+/*document.addEventListener("click", () => {
+    if ($("#instructionModal").css("display") === "block") {
+        $("#instructionModal").css("display", "none");
+    }
+})*/
+/*$(document).click((event) => {
+    var $target = $(event.target);
+    if (!$target.closest('#instructionModal').length &&
+        $("#instructionModal").css("display") === "block") {
+        $("#instructionModal").css("display", "none");
+    }
+});*/
+window.addEventListener("click", event => {
+    if (event.target === document.getElementById("instructionModal")) {
+        $("#instructionModal").css("display", "none");
+    }
 })
