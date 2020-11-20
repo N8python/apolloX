@@ -1575,9 +1575,9 @@ function Person({
                         Body.setAngularVelocity(lowerArm1, -lowerArm1.angle / 1000);
                         Body.setAngularVelocity(weaponBox, -weaponBox.angle / 1000);
                     } else {*/
-                    const toMouse1 = vecTo(lowerArm1.position.x, lowerArm1.position.y, target.x, target.y, 1);
-                    const toMouse2 = vecTo(lowerArm2.position.x, lowerArm2.position.y, target.x, target.y, 1);
-                    const toMouseWeapon = vecTo(weaponBox.position.x, weaponBox.position.y, target.x, target.y, 2);
+                    const toMouse1 = vecTo(lowerArm1.position.x, lowerArm1.position.y, target.x, target.y, 0.25);
+                    const toMouse2 = vecTo(lowerArm2.position.x, lowerArm2.position.y, target.x, target.y, 0.25);
+                    const toMouseWeapon = vecTo(weaponBox.position.x, weaponBox.position.y, target.x, target.y, 0.5);
                     setVelocity(lowerArm1, { x: lowerArm1.velocity.x + toMouse1.x, y: lowerArm1.velocity.y + toMouse1.y });
                     setVelocity(lowerArm2, { x: lowerArm2.velocity.x + toMouse2.x, y: lowerArm2.velocity.y + toMouse2.y });
                     setVelocity(weaponBox, { x: weaponBox.velocity.x + toMouseWeapon.x, y: weaponBox.velocity.y + toMouseWeapon.y });
