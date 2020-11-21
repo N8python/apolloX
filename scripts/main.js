@@ -398,6 +398,7 @@ function preload() {
     sounds.asteroidHit = loadSound("sounds/asteroidHit.wav");
     sounds.pop = loadSound("sounds/pop.flac");
     sounds.track1 = loadSound("sounds/track1.mp3");
+    sounds.menuTrack = loadSound("sounds/menuTrack.mp3")
 }
 let moonX;
 let moonY;
@@ -600,7 +601,9 @@ function draw() {
     textSize(30);
     text(coins, 495 + 80 - 4 * (coins.toString().length - 1) + 400, 35);
     sounds.track1.setVolume(localProxy.musicVolume);
+    sounds.menuTrack.setVolume(localProxy.musicVolume);
     if (gameState === "play") {
+        sounds.menuTrack.setVolume(0);
         if (!sounds.track1.isPlaying()) {
             sounds.track1.loop();
         }
@@ -837,7 +840,10 @@ function draw() {
         achievements.render();
         tick++;
     } else {
-        sounds.track1.pause()
+        sounds.track1.pause();
+        if (!sounds.menuTrack.isPlaying()) {
+            sounds.menuTrack.loop();
+        }
         settings.css("display", "none");
         achievements.render();
         backgroundPeople.forEach(person => {
@@ -937,6 +943,7 @@ const settingsMenu = () => {
     exitButton.click(() => {
         levelSelectMenu();
         paused = false;
+        sounds.menuTrack.jump()
         gameState = "start";
         clearGameState();
     });
@@ -986,6 +993,7 @@ const displayVictory = () => {
     backButton.click(() => {
         levelSelectMenu();
         paused = false;
+        sounds.menuTrack.jump()
         gameState = "start";
         clearGameState();
     });
@@ -1001,6 +1009,7 @@ const displayLoss = () => {
     backButton.click(() => {
         levelSelectMenu();
         paused = false;
+        sounds.menuTrack.jump()
         gameState = "start";
         clearGameState();
     });
@@ -1349,7 +1358,14 @@ $(document).on("click", "#graphics", () => {
         $("#instructionModal").css("display", "none");
     }
 });*/
+let startedTrack = false;
 window.addEventListener("click", event => {
+    if (gameState !== "play") {
+        if (!startedTrack) {
+            sounds.menuTrack.loop();
+            startedTrack = true;
+        }
+    }
     if (event.target === document.getElementById("instructionModal")) {
         $("#instructionModal").css("display", "none");
     }
