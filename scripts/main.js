@@ -574,7 +574,6 @@ function reset() {
 }
 
 function draw() {
-    coins = min(coins, 999999);
     coins = round(coins);
     localProxy.unlockedHats = Array.from(new Set(localProxy.unlockedHats));
     $("#graphics").html(`Graphics: ${localProxy.graphics}`)
@@ -595,11 +594,13 @@ function draw() {
     background(0);
     image(starImage, 0, 0, 700, 700);
     image(starImage, 700, 0, 700, 700);
-    image(coin, 450 + 80 - 12 * (coins.toString().length - 1) + 400, 10, 30, 30);
+    const coinImageOffset = (11 + max((coins.toString().length - 5) * 0.65, 0));
+    const textImageOffset = (4 + max((coins.toString().length - 5) * 0.5, 0));
+    image(coin, 450 + 80 - coinImageOffset * (coins.toString().length - 1) + 400, 10, 30, 30);
     fill(255);
     textAlign(CENTER);
     textSize(30);
-    text(coins, 495 + 80 - 5 * (coins.toString().length - 1) + 400, 35);
+    text(coins, 495 + 80 - textImageOffset * (coins.toString().length - 1) + 400, 35);
     sounds.track1.setVolume(localProxy.musicVolume);
     sounds.menuTrack.setVolume(localProxy.musicVolume);
     if (gameState === "play") {
@@ -784,10 +785,10 @@ function draw() {
             rect(player.head.position.x - 297 + 100 - 200, player.head.position.y - 296.5 - 50, 98 * progression, 7);
         }
         fill(255);
-        image(coin, player.head.position.x + 170 - 12 * (coins.toString().length - 1) - 200 + 400, player.head.position.y - 290 - 50, 30, 30);
+        image(coin, player.head.position.x + 170 - coinImageOffset * (coins.toString().length - 1) - 200 + 400, player.head.position.y - 290 - 50, 30, 30);
         textAlign(CENTER);
         textSize(30);
-        text(coins, player.head.position.x + 200 - 5 * (coins.toString().length - 1) - 200 + 400, player.head.position.y - 290 - 50, 35);
+        text(coins, player.head.position.x + 200 - textImageOffset * (coins.toString().length - 1) - 200 + 400, player.head.position.y - 290 - 50, 35);
         if (player.x < -2100 || player.x > 2100 || player.y < -2100 || player.y > 2100) {
             player.die();
         }
