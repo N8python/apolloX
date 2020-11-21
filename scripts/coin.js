@@ -3,11 +3,11 @@ function Coin({
     y,
     value
 }) {
-    let xOffset = x - (player.head.position.x + 170 + 200 - 11 * (coins.toString().length - 1));
+    let xOffset = x - (player.head.position.x + 170 + 200 - 12 * (coins.toString().length - 1));
     let yOffset = y - player.head.position.y - 50;
     return {
         draw() {
-            image(coin, player.head.position.x - 11 * (coins.toString().length - 1) + xOffset, player.head.position.y + yOffset, 30, 30);
+            image(coin, player.head.position.x - 12 * (coins.toString().length - 1) + xOffset, player.head.position.y + yOffset, 30, 30);
             //x = player.head.position.x;
             //y = player.head.position.y;
             if (!paused) {
