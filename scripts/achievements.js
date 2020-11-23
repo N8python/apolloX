@@ -50,6 +50,7 @@ const roundTable = { title: "Round Table", desc: "Acquire the laser lance.", hat
 const rubiedOn = { title: "Rubied On", desc: "Acquire the railgun.", hatsUnlocked: ["ruby"] };
 const fourthState = { title: "Fourth State", desc: "Acquire the plasma rifle.", hatsUnlocked: ["four"] };
 const mobyStar = { title: "Moby's Star", desc: "Acquire the harpoon.", hatsUnlocked: ["whale"] };
+const scorchedEarth = { title: "Scorched Earth", desc: "Acquire the flamethrower." }
 const medic = { title: "Medic", desc: "Use a health power up.", hatsUnlocked: ["redcross"] };
 const bodyBuilder = { title: "Body Builder", desc: "Use a strength power up.", hatsUnlocked: ["dumbbells"] };
 const doctor = { title: "Doctor", desc: "Upgrade the health power up.", hatsUnlocked: ["stethoscope"] };
@@ -101,7 +102,7 @@ const displayHats = {
     "head": "Head Hat",
     "sweat": "Sweat Hat",
 }
-const achievementList = [firstBlood, secondBlood, bigBrain, clutchGod, spaceEagle, roundTable, rubiedOn, fourthState, mobyStar, medic, bodyBuilder, doctor, hercules, tickSpeed, steroids, jeffBezos, johnDRockefeller, mansaMusa, ironResolve, moonLanding, georgeWashington, theSenses, alexanderHamilton, allTheSenses, tinPentecost, benFranklin, marieCurie, headsUp, sweatlord];
+const achievementList = [firstBlood, secondBlood, bigBrain, clutchGod, spaceEagle, roundTable, rubiedOn, fourthState, mobyStar, scorchedEarth, medic, bodyBuilder, doctor, hercules, tickSpeed, steroids, jeffBezos, johnDRockefeller, mansaMusa, ironResolve, moonLanding, georgeWashington, theSenses, alexanderHamilton, allTheSenses, tinPentecost, benFranklin, marieCurie, headsUp, sweatlord];
 const achievements = {
     currAchievements: [],
     currHatsUnlocked: [],

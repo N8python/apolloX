@@ -130,6 +130,8 @@ function Person({
                     return 0.001;*/
                 case plasrifle:
                 case harpoon:
+                case flamethrower:
+                case bomb:
                     return 0.0015;
                 case pistol:
                     return 0.0005;
@@ -495,6 +497,8 @@ function Person({
     let torsoHeight = 0;
     let anklePenalty = 0;
     let movingLegs = 0;
+    let bombStarted = false;
+    let bombTick = 0;
     let step = 0;
     let speed = 0;
     let dead = false;
@@ -524,7 +528,7 @@ function Person({
             return tempDamageBoost;
         },
         holdingRangedWeapon() {
-            return weapon === pistol || weapon === plasrifle || weapon === railgun;
+            return weapon === pistol || weapon === plasrifle || weapon === railgun || weapon === flamethrower;
         },
         add() {
             inGame = true;
@@ -582,7 +586,7 @@ function Person({
             }
         },
         draw() {
-            if (this.isPlayer && weapon !== currentWeapon) {
+            if (this === player && weapon !== currentWeapon) {
                 weapon = currentWeapon;
                 weaponWidth = weapon.weaponWidth;
                 weaponHeight = weapon.weaponHeight;
@@ -604,6 +608,8 @@ function Person({
                                 return 0.001;*/
                             case plasrifle:
                             case harpoon:
+                            case flamethrower:
+                            case bomb:
                                 return 0.0015;
                             case pistol:
                                 return 0.0005;
@@ -737,7 +743,7 @@ function Person({
                     } else {
                         cowardice = 0.995;
                     }
-                    if (boss || enemies.filter(enemy => !enemy.dead).length < 2) {
+                    if (boss || enemies.filter(enemy => !enemy.dead).length < 2 || type === "meleeBomber") {
                         cowardice = 0;
                     }
                 }
@@ -891,7 +897,7 @@ function Person({
                         speed += toMouse1.x * 0.1;
                     }
                 }
-                if (this === player && !dead && (weapon === pistol || weapon === plasrifle || weapon === railgun) && mouseIsPressed && cooldown === 1 && !paused) {
+                if (this === player && !dead && (weapon === pistol || weapon === plasrifle || weapon === railgun || weapon === flamethrower) && mouseIsPressed && cooldown === 1 && !paused) {
                     cooldown = 0;
                     const fireX = Math.cos(weaponBox.angle + Math.PI / 2);
                     const fireY = Math.sin(weaponBox.angle + Math.PI / 2);
@@ -905,23 +911,44 @@ function Person({
                             break;
                         case railgun:
                             offsetMultiplier = 3.5;
-                            break
+                            break;
+                        case flamethrower:
+                            offsetMultiplier = 10;
+                            break;
                     }
-                    const bullet = Bodies.rectangle(weaponBox.position.x + fireX * 10 * offsetMultiplier, weaponBox.position.y + fireY * 10 * offsetMultiplier, 20 + (weapon === plasrifle ? 20 : 0), 6, {
-                        frictionAir: 0,
-                        angle: weaponBox.angle + Math.PI / 2
-                    });
-                    /* bullet.velocity.x = toMouseWeapon.x * 3000;
-                     bullet.velocity.y = toMouseWeapon.y * 3000;*/
-                    bullet.strength = 5;
-                    if (weapon === plasrifle) {
-                        bullet.strength = 20;
+                    if (weapon !== flamethrower) {
+                        const bullet = Bodies.rectangle(weaponBox.position.x + fireX * 10 * offsetMultiplier, weaponBox.position.y + fireY * 10 * offsetMultiplier, 20 + (weapon === plasrifle ? 20 : 0), 6, {
+                            frictionAir: 0,
+                            angle: weaponBox.angle + Math.PI / 2
+                        });
+                        /* bullet.velocity.x = toMouseWeapon.x * 3000;
+                         bullet.velocity.y = toMouseWeapon.y * 3000;*/
+                        bullet.strength = 5;
+                        if (weapon === plasrifle) {
+                            bullet.strength = 20;
+                        }
+                        if (weapon === railgun) {
+                            bullet.strength = 0.25;
+                        }
+                        bullet.source = "player";
+                        Body.setVelocity(bullet, { x: fireX * 25, y: fireY * 25 });
+                        bullets.push(bullet);
+                        World.add(engine.world, [bullet]);
+                    } else {
+                        explodables.push(Explodable({
+                            x: weaponBox.position.x + fireX * 10 * offsetMultiplier,
+                            y: weaponBox.position.y + fireY * 10 * offsetMultiplier,
+                            color: [255, 125, 0],
+                            size: 12.5,
+                            xVel: fireX * 25,
+                            yVel: fireY * 25,
+                            fireballRadius: 100,
+                            powerRadius: 200,
+                            decayRate: 2,
+                            minDamage: 40,
+                            maxDamage: 60
+                        }));
                     }
-                    if (weapon === railgun) {
-                        bullet.strength = 0.25;
-                    }
-                    bullet.source = "player";
-                    Body.setVelocity(bullet, { x: fireX * 25, y: fireY * 25 });
                     if (weapon === pistol) {
                         emitters.push(Emitter({
                             x: weaponBox.position.x + fireX * 10,
@@ -985,7 +1012,6 @@ function Person({
                             }));
                         }
                     }
-                    bullets.push(bullet);
                     if (weapon !== railgun) {
                         sounds.bulletShot.setVolume(random(0.2, 0.4) * localProxy.sfxVolume);
                         sounds.bulletShot.rate(random(0.5, 1.5));
@@ -996,7 +1022,6 @@ function Person({
                             sounds.railgunShot.play();
                         }
                     }
-                    World.add(engine.world, [bullet]);
                 }
                 if (this === player && weapon === pistol && !paused) {
                     cooldown = min(1, cooldown + 0.05);
@@ -1004,10 +1029,13 @@ function Person({
                 if (this === player && weapon === plasrifle && !paused) {
                     cooldown = min(1, cooldown + 0.01);
                 }
+                if (this === player && weapon === flamethrower && !paused) {
+                    cooldown = min(1, cooldown + 0.01);
+                }
                 if (this === player && weapon === railgun && !paused) {
                     cooldown = min(1, cooldown + 1);
                 }
-                if (this === player && (weapon === harpoon || weapon === moonStaff) && !dead && mouseIsPressed && !paused && !deadBodyParts.includes(lowerArm1)) {
+                if (this === player && (weapon === harpoon || weapon === moonStaff || weapon === flamethrower) && !dead && mouseIsPressed && !paused && !deadBodyParts.includes(lowerArm1)) {
                     const mx = mouseX - (500 - player.head.position.x);
                     const my = mouseY - (350 - player.head.position.y);
                     const angleToMousePointer = directionCalc(weaponBox.position.x, weaponBox.position.y, mx, my);
@@ -1093,6 +1121,32 @@ function Person({
                                         Body.setAngularVelocity(weaponBox, weaponBox.angularVelocity - 0.01);
                                     }
                                 }
+                            }
+                        } else if (type === "meleeBomber") {
+                            if (dist(this.x, this.y, player.x, player.y) < 150) {
+                                bombStarted = true;
+                                bombTick++;
+                                if (bombTick === 60) {
+                                    explodables.push(Explodable({
+                                        x: weaponBox.position.x,
+                                        y: weaponBox.position.y,
+                                        color: [255, 255, 255],
+                                        size: 12.5,
+                                        explode: true,
+                                        xVel: 0,
+                                        yVel: 0,
+                                        fireballRadius: 75,
+                                        powerRadius: 150,
+                                        decayRate: 3,
+                                        minDamage: 40 * strength,
+                                        maxDamage: 60 * strength,
+                                        fromPlayer: false
+                                    }))
+                                    World.remove(engine.world, [weaponBox])
+                                }
+                            } else {
+                                bombStarted = false;
+                                bombTick = 0;
                             }
                         }
                     } else {
@@ -1221,7 +1275,7 @@ function Person({
                 }
                 if (type) {
                     enemies.forEach(enemy => {
-                        if (dist(this.x, this.y, enemy.x, enemy.y) < 200 && !dead && !enemy.dead && !(enemy === this)) {
+                        if (dist(this.x, this.y, enemy.x, enemy.y) < 200 && !dead && !enemy.dead && !(enemy === this) && (type !== "meleeBomber" || (type === "meleeBomber" && enemy.type === "meleeBomber"))) {
                             const away = vecTo(this.x, this.y + 0.0001, enemy.x, enemy.y, -2 * ((200 - dist(this.x, this.y, enemy.x, enemy.y)) / 200));
                             setVelocity(lowerArm1, { x: lowerArm1.velocity.x + away.x, y: lowerArm1.velocity.y + away.y });
                             setVelocity(lowerArm2, { x: lowerArm2.velocity.x + away.x, y: lowerArm2.velocity.y + away.y });
@@ -1235,8 +1289,8 @@ function Person({
                             }
                         }
                         const totemPole = [lazdagger, pistol, lance, axe, railgun, plasrifle];
-                        const aiTypes = ["melee", "ranged", "meleeRanged", "meleeHeavy", "rangedRapid"];
-                        if (dist(this.x, this.y, enemy.weapon.position.x, enemy.weapon.position.y) < 400 && enemy.deadBodyParts.includes(enemy.weapon) && !(enemy === this) && !enemy.weapon.hide && !deadBodyParts.includes(lowerArm1) && !boss && !dead && enemy.weapon.weaponImage !== harpoon) {
+                        const aiTypes = ["melee", "ranged", "meleeRanged", "meleeHeavy", "rangedRapid", "rangedMelee"];
+                        if (dist(this.x, this.y, enemy.weapon.position.x, enemy.weapon.position.y) < 400 && enemy.deadBodyParts.includes(enemy.weapon) && !(enemy === this) && !enemy.weapon.hide && !deadBodyParts.includes(lowerArm1) && !boss && !dead && enemy.weapon.weaponImage !== harpoon && enemy.weapon.weaponImage !== flamethrower) {
                             if (totemPole.indexOf(enemy.weapon.weaponImage) > totemPole.indexOf(weapon) && totemPole.indexOf(enemy.weapon.weaponImage) > -1 && totemPole.indexOf(weapon) > -1) {
                                 if (dist(lowerArm1.position.x, lowerArm1.position.y, enemy.weapon.position.x, enemy.weapon.position.y) < 50) {
                                     type = aiTypes[totemPole.indexOf(enemy.weapon.weaponImage)];
@@ -1263,6 +1317,8 @@ function Person({
                                                     return 0.001;*/
                                                 case plasrifle:
                                                 case harpoon:
+                                                case flamethrower:
+                                                case bomb:
                                                     return 0.0015;
                                                 case pistol:
                                                     return 0.0005;
@@ -1634,7 +1690,22 @@ function Person({
                     rotate(Math.PI / 2 + weaponBox.angle);
                     imageMode(CENTER);
                     //tint(255, deadTimer);
-                    image(weapon, 0, 0, weaponHeight, weaponWidth);
+                    if (!bombStarted) {
+                        image(weapon, 0, 0, weaponHeight, weaponWidth);
+                    } else {
+                        if (bombTick < 60) {
+                            if (dead || bombTick % 15 < 7) {
+                                let scale = ((7 - (bombTick % 15)) / 7) * 0.25 + 1;
+                                if (bombTick < 8) {
+                                    scale = 1;
+                                }
+                                image(bomb, 0, 0, weaponHeight * scale, weaponWidth * scale);
+                            } else {
+                                const scale = (((bombTick % 15) - 7) / 7) * (bombTick > 52 ? 0.75 : 0.25) + 1;
+                                image(flashbomb, 0, 0, weaponHeight * scale, weaponWidth * scale);
+                            }
+                        }
+                    }
                     //noTint();
                     pop();
                 }
@@ -1905,6 +1976,69 @@ function Person({
             });
             prevCollidedBodies = Detector.collisions(this.bodyParts.map(x => [this.opponent.weapon, x]).concat(this.bodyParts.map(x => [x, this.opponent.weapon])), engine).map(x => x.bodyA === this.opponent.weapon ? x.bodyB : x.bodyA);
         },
+        tickDamage() {
+            this.bodyParts.forEach(body => {
+                if (body.health < 0) {
+                    if (!((boss || (!type && levelNum === 9)) && (body === lowerArm1 || body == upperArm1))) {
+                        deadBodyParts.push(body);
+                    }
+                    switch (body) {
+                        case head:
+                            World.remove(engine.world, [neck]);
+                            deadBodyParts.push(torso);
+                            dead = true;
+                        case torso:
+                            deadBodyParts.push(head);
+                            deadBodyParts.push(upperArm1);
+                            deadBodyParts.push(upperArm2);
+                            deadBodyParts.push(upperLeg1);
+                            deadBodyParts.push(upperLeg2);
+                            deadBodyParts.push(lowerArm1);
+                            deadBodyParts.push(lowerArm2);
+                            deadBodyParts.push(lowerLeg1);
+                            deadBodyParts.push(lowerLeg2);
+                            deadBodyParts.push(weaponBox);
+                            World.remove(engine.world, [neck, shoulder1, shoulder2, elbow1, elbow2, hipJoint1, hipJoint2, knee1, knee2, weaponAttachment]);
+                            dead = true;
+                            break;
+                        case upperArm1:
+                            if (!(boss || (!type && levelNum === 9))) {
+                                deadBodyParts.push(lowerArm1);
+                                deadBodyParts.push(weaponBox);
+                                World.remove(engine.world, [shoulder1, elbow1]);
+                            }
+                            break;
+                        case upperArm2:
+                            deadBodyParts.push(lowerArm2);
+                            World.remove(engine.world, [shoulder2, elbow2]);
+                            break;
+                        case lowerArm1:
+                            if (!(boss || (!type && levelNum === 9))) {
+                                deadBodyParts.push(weaponBox);
+                                World.remove(engine.world, [elbow1]);
+                                break;
+                            }
+                        case lowerArm2:
+                            World.remove(engine.world, [elbow2]);
+                            break;
+                        case upperLeg1:
+                            deadBodyParts.push(lowerLeg1);
+                            World.remove(engine.world, [hipJoint1, knee1]);
+                            break;
+                        case upperLeg2:
+                            deadBodyParts.push(lowerLeg2);
+                            World.remove(engine.world, [hipJoint2, knee2]);
+                            break;
+                        case lowerLeg1:
+                            World.remove(engine.world, [knee1]);
+                            break;
+                        case lowerLeg2:
+                            World.remove(engine.world, [knee2]);
+                            break;
+                    }
+                }
+            })
+        },
         get boss() {
             return boss;
         },
@@ -2055,6 +2189,18 @@ const rangedRapid = (strength) => () => Person({
     coinAmount: 3,
     coinValue: 2
 });
+const bomber = (strength) => () => Person({
+    x: player.head.position.x + random(400, 600) * (random() < 0.5 ? 1 : -1),
+    y: player.head.position.y + random(400, 600) * (random() < 0.5 ? 1 : -1),
+    category: 4,
+    weapon: bomb,
+    hat: "spaceHelmet",
+    type: "meleeBomber",
+    strength: strength,
+    color: [255, 125, 0],
+    coinAmount: 2,
+    coinValue: 2
+});
 
 const meleeHarpoon = (strength) => () => Person({
     x: player.head.position.x + random(400, 600) * (random() < 0.5 ? 1 : -1),
@@ -2084,14 +2230,15 @@ const boss = (strength) => () => Person({
 });
 
 const endless = {
-    enemiesList: ["melee", "ranged", "meleeRanged", "rangedMelee", "rangedRapid", "meleeHarpoon"],
+    enemiesList: ["melee", "ranged", "meleeRanged", "rangedMelee", "rangedRapid", "bomber", "meleeHarpoon"],
     enemyCode: {
         melee: melee,
         ranged: ranged,
         meleeRanged: meleeRanged,
         rangedMelee: rangedMelee,
         rangedRapid: rangedRapid,
-        meleeHarpoon: meleeHarpoon
+        meleeHarpoon: meleeHarpoon,
+        bomber: bomber
     },
     enemyPotency: {
         melee: (wave) => 1.15 ** (-wave),
@@ -2099,6 +2246,7 @@ const endless = {
         meleeRanged: (wave) => Math.max((1 / (1 + Math.exp(-100 * (wave - 10) ** -2))) * 2 - 1, 0.25),
         rangedMelee: (wave) => 1 / (1 + Math.exp(-0.1 * (wave - 30))),
         rangedRapid: (wave) => 0.5 / (1 + Math.exp(-0.2 * (wave - 30))),
+        bomber: (wave) => 0.5 / (1 + Math.exp(-0.25 * (wave - 25))),
         meleeHarpoon: (wave) => 1 / (1 + Math.exp(-0.25 * (wave - 35)))
     }
 }

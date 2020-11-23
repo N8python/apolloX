@@ -12,6 +12,7 @@ let bullets = [];
 let backgroundPeople = [];
 let powerupList = [];
 let emitters = [];
+let explodables = [];
 let lazord;
 let lazdagger;
 let axe;
@@ -21,6 +22,9 @@ let spoon;
 let lance;
 let railgun;
 let harpoon;
+let flamethrower;
+let bomb;
+let flashbomb;
 let moonStaff;
 let starImage;
 let asteroidImage;
@@ -148,6 +152,12 @@ const weapons = {
         display: "Harpoon",
         unlocked: false,
         cost: 750
+    },
+    "flamethrower": {
+        weapon: () => flamethrower,
+        display: "Flamethrower",
+        unlocked: false,
+        cost: 3000
     }
 }
 localProxy.unlockedWeapons.forEach(weapon => {
@@ -183,6 +193,15 @@ function preload() {
     harpoon = loadImage("assets/harpoon.png");
     harpoon.weaponWidth = 90;
     harpoon.weaponHeight = 150;
+    flamethrower = loadImage("assets/flamethrower.png");
+    flamethrower.weaponWidth = 45;
+    flamethrower.weaponHeight = 180;
+    bomb = loadImage("assets/bomb.png");
+    bomb.weaponWidth = 45;
+    bomb.weaponHeight = 45;
+    flashbomb = loadImage("assets/flashbomb.png");
+    flashbomb.weaponWidth = 45;
+    flashbomb.weaponHeight = 45;
     moonStaff = loadImage("assets/moonStaff.png");
     moonStaff.weaponWidth = 85;
     moonStaff.weaponHeight = 150;
@@ -555,6 +574,7 @@ function clearGameState() {
         person.add();
     })
     emitters = [];
+    explodables = [];
     player.add();
     tick = 0;
     wave = 0;
@@ -564,6 +584,7 @@ let tick = 0;
 let wave = 0;
 const settings = $("#settings");
 let winState;
+let sceneTick = 0;
 
 function reset() {
     noLoop();
@@ -572,6 +593,7 @@ function reset() {
     localStorage.clear();
     location.reload();
 }
+let oldGameState;
 
 function draw() {
     coins = round(coins);
@@ -601,8 +623,13 @@ function draw() {
     textAlign(CENTER);
     textSize(30);
     text(coins, 495 + 80 - textImageOffset * (coins.toString().length - 1) + 400, 35);
-    sounds.track1.setVolume(localProxy.musicVolume);
-    sounds.menuTrack.setVolume(localProxy.musicVolume);
+    sounds.track1.setVolume(localProxy.musicVolume * min((sceneTick / 240), 1));
+    sounds.menuTrack.setVolume(localProxy.musicVolume * min((sceneTick / 240), 1));
+    if (oldGameState !== gameState) {
+        sceneTick = 0;
+    }
+    oldGameState = gameState;
+    sceneTick++;
     if (gameState === "play") {
         sounds.menuTrack.setVolume(0);
         if (!sounds.track1.isPlaying()) {
@@ -835,6 +862,9 @@ function draw() {
                 bullets.splice(i, 1);
             }
         });
+        explodables.forEach(explodable => {
+            explodable.draw();
+        })
         coinList.forEach(coinDisp => {
             coinDisp.draw();
         })
@@ -1113,7 +1143,8 @@ const weaponShop = () => {
                     "lance": roundTable,
                     "railgun": rubiedOn,
                     "plasrifle": fourthState,
-                    "harpoon": mobyStar
+                    "harpoon": mobyStar,
+                    "flamethrower": scorchedEarth
                 })[weaponName]);
                 coins -= weapon.cost;
                 weapon.unlocked = true;
