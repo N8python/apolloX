@@ -935,6 +935,9 @@ function Person({
                         bullets.push(bullet);
                         World.add(engine.world, [bullet]);
                     } else {
+                        sounds.bulletShot.setVolume(random(0.2, 0.4) * localProxy.sfxVolume);
+                        sounds.bulletShot.rate(random(0.5, 1.5));
+                        sounds.bulletShot.play();
                         explodables.push(Explodable({
                             x: weaponBox.position.x + fireX * 10 * offsetMultiplier,
                             y: weaponBox.position.y + fireY * 10 * offsetMultiplier,
@@ -1123,7 +1126,7 @@ function Person({
                                 }
                             }
                         } else if (type === "meleeBomber") {
-                            if (dist(this.x, this.y, player.x, player.y) < 150) {
+                            if (dist(this.x, this.y, player.x, player.y) < 200) {
                                 bombStarted = true;
                                 bombTick++;
                                 if (bombTick === 60) {
@@ -1141,7 +1144,10 @@ function Person({
                                         minDamage: 40 * strength,
                                         maxDamage: 60 * strength,
                                         fromPlayer: false
-                                    }))
+                                    }));
+                                    sounds.explosion.setVolume(random(0.15, 0.3) * localProxy.sfxVolume);
+                                    sounds.explosion.rate(random(1.5, 2.5));
+                                    sounds.explosion.play();
                                     World.remove(engine.world, [weaponBox])
                                 }
                             } else {
@@ -1702,7 +1708,7 @@ function Person({
                                 image(bomb, 0, 0, weaponHeight * scale, weaponWidth * scale);
                             } else {
                                 const scale = (((bombTick % 15) - 7) / 7) * (bombTick > 52 ? 0.75 : 0.25) + 1;
-                                image(flashbomb, 0, 0, weaponHeight * scale, weaponWidth * scale);
+                                image(deadTimer < 255 ? bomb : flashbomb, 0, 0, weaponHeight * scale, weaponWidth * scale);
                             }
                         }
                     }
@@ -1867,10 +1873,13 @@ function Person({
                             sounds.laserOnFlesh.play();
                             hurtCooldown = random(30, 60);
                         }
-                    } else if (opponent.asteroid) {
+                    } else if (opponent.asteroid || this.opponent.weapon.weaponImage === flamethrower) {
                         if (!sounds.asteroidHit.isPlaying()) {
                             sounds.asteroidHit.setVolume(2.5 * localProxy.sfxVolume);
                             sounds.asteroidHit.rate(random(0.5, 1));
+                            if (this.opponent.weapon.weaponImage === flamethrower) {
+                                sounds.asteroidHit.rate(random(0.4, 0.8));
+                            }
                             sounds.asteroidHit.play();
                             hurtCooldown = 0;
                         }

@@ -34,6 +34,13 @@ function Explodable({
                 World.remove(engine.world, projectile);
             }
             if (explosionStarted) {
+                if (explosionTick === 0) {
+                    if (currentWeapon === flamethrower && fromPlayer) {
+                        sounds.fireball.setVolume(0.3 * localProxy.sfxVolume);
+                        sounds.fireball.rate(random(1.5, 2.5));
+                        sounds.fireball.play();
+                    }
+                }
                 explosionStarted = true;
                 explosionTick++;
                 const progression = min(explosionTick * 8 / 255, 1);

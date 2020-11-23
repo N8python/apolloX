@@ -416,8 +416,10 @@ function preload() {
     sounds.hellfire = loadSound("sounds/hellfire.wav");
     sounds.asteroidHit = loadSound("sounds/asteroidHit.wav");
     sounds.pop = loadSound("sounds/pop.flac");
+    sounds.explosion = loadSound("sounds/explosion.wav");
+    sounds.fireball = loadSound("sounds/fireball.wav");
     sounds.track1 = loadSound("sounds/track1.mp3");
-    sounds.menuTrack = loadSound("sounds/menuTrack.mp3")
+    sounds.menuTrack = loadSound("sounds/menuTrack.mp3");
 }
 let moonX;
 let moonY;
