@@ -916,8 +916,9 @@ function Person({
                             offsetMultiplier = 10;
                             break;
                     }
+                    let bullet;
                     if (weapon !== flamethrower) {
-                        const bullet = Bodies.rectangle(weaponBox.position.x + fireX * 10 * offsetMultiplier, weaponBox.position.y + fireY * 10 * offsetMultiplier, 20 + (weapon === plasrifle ? 20 : 0), 6, {
+                        bullet = Bodies.rectangle(weaponBox.position.x + fireX * 10 * offsetMultiplier, weaponBox.position.y + fireY * 10 * offsetMultiplier, 20 + (weapon === plasrifle ? 20 : 0), 6, {
                             frictionAir: 0,
                             angle: weaponBox.angle + Math.PI / 2
                         });
