@@ -867,6 +867,9 @@ function draw() {
         explodables.forEach(explodable => {
             explodable.draw();
         })
+        backgroundPeople.forEach(person => {
+            person.draw();
+        });
         coinList.forEach(coinDisp => {
             coinDisp.draw();
         })
@@ -881,7 +884,7 @@ function draw() {
         achievements.render();
         backgroundPeople.forEach(person => {
             person.draw();
-        })
+        });
     }
     if (paused) {
         engine.world.bodies.forEach(body => Sleeping.set(body, true));

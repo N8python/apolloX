@@ -1660,89 +1660,91 @@ function Person({
                 setVelocity(torso, { x: torso.velocity.x + speed, y: torso.velocity.y - 0.2 });
                 setVelocity(torso, { x: min(max(-10, torso.velocity.x), 10), y: torso.velocity.y });
                 //Body.setAngle(weaponBox, lowerLeg1.angle);
-                stroke(0);
-                strokeWeight(1);
-                let myColor = color.concat(deadTimer);
-                if (timeSinceHeal > 1) {
-                    myColor = [255, 255 + (255 * (1 - timeSinceHeal)), 255 + (255 * (1 - timeSinceHeal))].concat(deadTimer);
-                }
-                fill(...myColor);
-                drawVertices(torso.vertices);
-                /*drawVertices(arm1.vertices);
-                drawVertices(arm2.vertices);*/
-                drawVertices(upperLeg1.vertices);
-                drawVertices(upperLeg2.vertices);
-                drawVertices(lowerLeg1.vertices);
-                drawVertices(lowerLeg2.vertices);
-                if (tempDamageBoost > 1) {
-                    fill(255 + (255 * (1 - tempDamageBoost)), 255, 255);
-                }
-                drawVertices(upperArm1.vertices);
-                drawVertices(lowerArm1.vertices);
-                fill(...myColor);
-                drawVertices(upperArm2.vertices);
-                drawVertices(lowerArm2.vertices);
-                stroke(255);
-                strokeWeight(3);
-                if (weapon === harpoon && !deadBodyParts.includes(lowerArm1)) {
-                    drawConstraint(weaponAttachment);
-                }
-                strokeWeight(1);
-                stroke(0);
-                /*fill(255, 0, 0);
-                drawVertices(weaponBox.vertices);*/
-                if (weapon && !weaponBox.hide) {
-                    push();
-                    translate(weaponBox.position.x, weaponBox.position.y);
-                    rotate(Math.PI / 2 + weaponBox.angle);
-                    imageMode(CENTER);
-                    //tint(255, deadTimer);
-                    if (!bombStarted) {
-                        image(weapon, 0, 0, weaponHeight, weaponWidth);
-                    } else {
-                        if (bombTick < 60) {
-                            if (dead || bombTick % 15 < 7) {
-                                let scale = ((7 - (bombTick % 15)) / 7) * 0.25 + 1;
-                                if (bombTick < 8) {
-                                    scale = 1;
+                if (!backgroundPerson || gameState !== "play") {
+                    stroke(0);
+                    strokeWeight(1);
+                    let myColor = color.concat(deadTimer);
+                    if (timeSinceHeal > 1) {
+                        myColor = [255, 255 + (255 * (1 - timeSinceHeal)), 255 + (255 * (1 - timeSinceHeal))].concat(deadTimer);
+                    }
+                    fill(...myColor);
+                    drawVertices(torso.vertices);
+                    /*drawVertices(arm1.vertices);
+                    drawVertices(arm2.vertices);*/
+                    drawVertices(upperLeg1.vertices);
+                    drawVertices(upperLeg2.vertices);
+                    drawVertices(lowerLeg1.vertices);
+                    drawVertices(lowerLeg2.vertices);
+                    if (tempDamageBoost > 1) {
+                        fill(255 + (255 * (1 - tempDamageBoost)), 255, 255);
+                    }
+                    drawVertices(upperArm1.vertices);
+                    drawVertices(lowerArm1.vertices);
+                    fill(...myColor);
+                    drawVertices(upperArm2.vertices);
+                    drawVertices(lowerArm2.vertices);
+                    stroke(255);
+                    strokeWeight(3);
+                    if (weapon === harpoon && !deadBodyParts.includes(lowerArm1)) {
+                        drawConstraint(weaponAttachment);
+                    }
+                    strokeWeight(1);
+                    stroke(0);
+                    /*fill(255, 0, 0);
+                    drawVertices(weaponBox.vertices);*/
+                    if (weapon && !weaponBox.hide) {
+                        push();
+                        translate(weaponBox.position.x, weaponBox.position.y);
+                        rotate(Math.PI / 2 + weaponBox.angle);
+                        imageMode(CENTER);
+                        //tint(255, deadTimer);
+                        if (!bombStarted) {
+                            image(weapon, 0, 0, weaponHeight, weaponWidth);
+                        } else {
+                            if (bombTick < 60) {
+                                if (dead || bombTick % 15 < 7) {
+                                    let scale = ((7 - (bombTick % 15)) / 7) * 0.25 + 1;
+                                    if (bombTick < 8) {
+                                        scale = 1;
+                                    }
+                                    image(bomb, 0, 0, weaponHeight * scale, weaponWidth * scale);
+                                } else {
+                                    const scale = (((bombTick % 15) - 7) / 7) * (bombTick > 52 ? 0.75 : 0.25) + 1;
+                                    image(deadTimer < 255 ? bomb : flashbomb, 0, 0, weaponHeight * scale, weaponWidth * scale);
                                 }
-                                image(bomb, 0, 0, weaponHeight * scale, weaponWidth * scale);
-                            } else {
-                                const scale = (((bombTick % 15) - 7) / 7) * (bombTick > 52 ? 0.75 : 0.25) + 1;
-                                image(deadTimer < 255 ? bomb : flashbomb, 0, 0, weaponHeight * scale, weaponWidth * scale);
                             }
                         }
+                        //noTint();
+                        pop();
                     }
-                    //noTint();
-                    pop();
-                }
-                /*drawVertices(foot1.vertices);
-                drawVertices(foot2.vertices);*/
-                fill(255);
-                drawCircle(head);
-                push();
-                noFill();
-                const headX = head.position.x;
-                const headY = head.position.y;
-                const xOffset = constrain(head.velocity.x, -2, 2);
-                const yOffset = constrain(head.velocity.y, -2, 2);
-                translate(headX, headY);
-                rotate(head.angle);
-                fill(255);
-                circle(-7, -2, 10);
-                circle(7, -2, 10);
-                fill(0);
-                circle(-7 + xOffset, -2 + yOffset, 5);
-                circle(7 + xOffset, -2 + yOffset, 5);
-                pop();
-                if (hat) {
+                    /*drawVertices(foot1.vertices);
+                    drawVertices(foot2.vertices);*/
+                    fill(255);
+                    drawCircle(head);
                     push();
-                    translate(head.position.x, head.position.y);
-                    rotate((![hats.swordHat, hats.disguise, hats.tophat, hats.tinfoilhat, hats.sweat, hats.table, hats.four, hats.lunarRover, hats.temple].includes(hat)) && !this.deadBodyParts.includes(head) ? torso.angle : head.angle);
-                    //tint(255, deadTimer);
-                    image(hat, hat.xOffset, hat.yOffset, hat.customWidth ? hat.customWidth : 60, hat.customHeight ? hat.customHeight : 60);
-                    //noTint();
+                    noFill();
+                    const headX = head.position.x;
+                    const headY = head.position.y;
+                    const xOffset = constrain(head.velocity.x, -2, 2);
+                    const yOffset = constrain(head.velocity.y, -2, 2);
+                    translate(headX, headY);
+                    rotate(head.angle);
+                    fill(255);
+                    circle(-7, -2, 10);
+                    circle(7, -2, 10);
+                    fill(0);
+                    circle(-7 + xOffset, -2 + yOffset, 5);
+                    circle(7 + xOffset, -2 + yOffset, 5);
                     pop();
+                    if (hat) {
+                        push();
+                        translate(head.position.x, head.position.y);
+                        rotate((![hats.swordHat, hats.disguise, hats.tophat, hats.tinfoilhat, hats.sweat, hats.table, hats.four, hats.lunarRover, hats.temple].includes(hat)) && !this.deadBodyParts.includes(head) ? torso.angle : head.angle);
+                        //tint(255, deadTimer);
+                        image(hat, hat.xOffset, hat.yOffset, hat.customWidth ? hat.customWidth : 60, hat.customHeight ? hat.customHeight : 60);
+                        //noTint();
+                        pop();
+                    }
                 }
                 /*if (this === steveio) {
                     noStroke();
