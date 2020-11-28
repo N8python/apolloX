@@ -1398,7 +1398,7 @@ $(document).on("click", "#graphics", () => {
 let startedTrack = false;
 window.addEventListener("click", event => {
     if (gameState !== "play") {
-        if (!startedTrack) {
+        if (!startedTrack && sounds.menuTrack && sounds.menuTrack.isLoaded && sounds.menuTrack.isLoaded()) {
             sounds.menuTrack.loop();
             startedTrack = true;
         }
